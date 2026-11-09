@@ -216,19 +216,54 @@ Digital wireframes for each screen. The source file is the [Climbing App Wirefra
 
 ## GitHub Project board
 
-[Add screenshot of your Project Board with three milestones visible in
-this section]
-<img src="YOUR_WIREFRAME_IMAGE_URL" width=600>
+Project: [CS388 Team 2 — Crux board](https://github.com/orgs/CS388-Team-2/projects)
+
+<img src="docs/milestone2-board-milestones.png" width="600" alt="Project board showing all three milestones">
 
 ## Issue cards
 
-- [Add screenshot of your Project Board with the issues that you've been working on for this unit's milestone] <img src="YOUR_WIREFRAME_IMAGE_URL" width=600>
-- [Add screenshot of your Project Board with the issues that you're working on in the **NEXT sprint**. It should include issues for next unit with assigned owners.] <img src="YOUR_WIREFRAME_IMAGE_URL" width=600>
+Sprint 1 (Project Setup) cards:
+
+<img src="docs/milestone2-board-sprint1.png" width="600" alt="Current sprint issue cards with status and owners">
+
+Next sprint (Milestone 2 on GitHub: _Account creation and settings, Scrollable feed, climb logging_) cards:
+
+<img src="docs/milestone2-board-sprint2.png" width="600" alt="Next sprint issues with assignees">
 
 ## Issues worked on this sprint
 
-- List the issues you completed this sprint
-- [Add giphy that shows current build progress for Milestone 2. Note: We will be looking for progression of work between Milestone 2 and 3. Make sure your giphys are not duplicated and clearly show the change from Sprint 1 to 2.]
+| Issue | Title | Owner | Sprint 1 outcome |
+|-------|-------|-------|------------------|
+| [#5](https://github.com/CS388-Team-2/Crux/issues/5) | Create Manifest | mFerr16 | Manifest declares `INTERNET`, location, camera, activity recognition, notifications |
+| [#3](https://github.com/CS388-Team-2/Crux/issues/3) | Initial Permissions | alexismulvany | Permissions screen + runtime requests; Skip / Continue → Feed |
+
+_No other Project Setup issues existed on GitHub this sprint; see “Next sprint” below for DB and full UI skeleton work._
+
+## Build progress (Sprint 1)
+
+- Android Studio project builds with Jetpack Compose + Navigation.
+- **Welcome → Permissions → stub Feed** matches wireframes 01–03 at a skeleton level (not pixel-perfect).
+- Room, auth, scrollable feed, favorites, diary, and sensors are **not** implemented yet (planned for GitHub Milestones 2 and 3).
+
+### Demo GIF
+
+Record in Android Studio (**View → Tool Windows → Logcat** area, or device **Screen record**), then export and place at `docs/milestone2-demo.gif`:
+
+<img src="docs/milestone2-demo.gif" width="300" alt="Welcome, permissions flow, and stub Kilter feed">
+
+_Suggested recording flow (≈15–25 s):_ launch app → **Get started** → **Allow permissions** (optional) → **Continue to feed** → scroll stub climb cards.
+
+## User stories / features (Sprint 1)
+
+From the [product spec](#1-user-features-required-and-optional) — only items touched this sprint:
+
+- [x] App shell and onboarding path (Welcome, Permissions) toward the feed
+- [x] Declare and request permissions needed for later features (location, motion, camera, notifications)
+- [ ] Scrollable Kilter board feed + route detail
+- [ ] Logbook / diary
+- [ ] Photos in logbook
+- [ ] Sensor-based climb distance
+- [ ] Favorite board setups
 
 <br>
 
