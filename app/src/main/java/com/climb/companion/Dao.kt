@@ -3,6 +3,7 @@ package com.climb.companion
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
+import androidx.room.Update
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -21,6 +22,35 @@ interface AppDao{
     @Query("SELECT * FROM ClimbLogs WHERE userID = :id")
     fun getLogs(id: Long): Flow<List<ClimbLogs>>
 
+    //Sessions
+    @Insert
+    suspend fun insertSession(session: Sessions): Long
+
+    @Query("SELECT * FROM Sessions WHERE sessionId = :id")
+    suspend fun getSession(id: Long): List<Sessions>
+
+    @Query("Select * From Sessions where userId = :id and endTime is null")
+    fun getRunningSession(id: Long): Flow<List<Sessions>>
+
+    // End session
+    @Query("UPDATE Sessions SET endTime = :endTime WHERE sessionId = :sessionId")
+    suspend fun endSession(sessionId: Long, endTime: String)
+
+
+
+    //Attempts
+    @Insert
+    suspend fun insertAttempt(attempt: Attempts)
+
+    @Query("SELECT * FROM Attempts WHERE sId = :id")
+    fun getAttempt(id: Long): Flow<List<Attempts>>
+
+    @Update
+    suspend fun updateAttempt(attempt: Attempts)
+
+    @Query("Delete from Attempts where attemptId = :id")
+    suspend fun deleteAttempt(id: Long)
+
     //Favorites
     @Insert
     suspend fun insertFavorite(favorite: Favorites)
@@ -30,6 +60,12 @@ interface AppDao{
 
     @Query("Delete from Favorites where favoriteId = :fid")
     suspend fun deleteFavorites(fid: Long)
+
+    @Query("Select * from Favorites WHERE userID = :id and Attempted = 1")
+    fun getAttempted(id: Long): Flow<List<Favorites>>
+
+    @Query("Select * from Favorites WHERE userID = :id and Attempted = 0")
+    fun getNotAttempted(id: Long): Flow<List<Favorites>>
 
     //Photo Gallery
     @Insert

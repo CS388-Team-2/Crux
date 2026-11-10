@@ -46,7 +46,7 @@ class CreateAccountActivity : AppCompatActivity() {
                         return@withContext 0L
                     }
                     dao.insertLogin(Login(Username = username, Password = password))
-                    dao.getLogin(username).firstOrNull()?.id ?: -1L
+                    dao.getLogin(username).firstOrNull()?.uId ?: -1L
                 }
                 createButton.isEnabled = true
                 when {

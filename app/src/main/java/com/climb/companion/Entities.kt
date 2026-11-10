@@ -37,6 +37,47 @@ data class ClimbLogs(
     val uId: Long,
 )
 
+@Entity(tableName = "Sessions",
+    foreignKeys = [
+        ForeignKey(
+            entity = Login::class,
+            parentColumns = ["uId"],
+            childColumns = ["userId"],
+            onDelete = ForeignKey.CASCADE
+        )],
+)
+data class Sessions(
+    @PrimaryKey(autoGenerate = true) val sessionId: Long = 0,
+    val date: String, //yyyy-mm-dd
+    val startTime: String?,
+    val route: String?,
+    val distance: Double?,
+    val sessionTime: Long?,
+    val endTime: String? = null,
+
+    @ColumnInfo(name = "userId")
+    val uId: Long,
+)
+
+@Entity(tableName = "Attempts",
+        foreignKeys = [
+        ForeignKey(
+        entity = Sessions::class,
+        parentColumns = ["sessionId"],
+        childColumns = ["sId"],
+        onDelete = ForeignKey.CASCADE
+    )])
+data class Attempts(
+    @PrimaryKey(autoGenerate = true) val attemptId: Long = 0,
+    val result: String,
+    val route: String?,
+    val note: String?,
+
+    @ColumnInfo(name = "sId")
+    val sessionId: Long
+
+)
+
 @Entity(
     tableName = "Favorites",
     foreignKeys = [
@@ -52,6 +93,7 @@ data class Favorites(
     @PrimaryKey(autoGenerate = true) val favoriteId: Long = 0,
     val boardID: String,
     val angle: Int?,
+    val Attempted: Boolean = false,
 
     @ColumnInfo(name = "userId")
     val uId: Long,

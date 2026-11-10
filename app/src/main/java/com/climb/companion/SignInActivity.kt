@@ -48,7 +48,7 @@ class SignInActivity : AppCompatActivity() {
                 if (matches == null) {
                     Toast.makeText(this@SignInActivity, "Invalid username or password", Toast.LENGTH_SHORT).show()
                 } else {
-                    openPermissions(matches.id, matches.Username)
+                    openPermissions(matches.uId, matches.Username)
                 }
             }
         }
