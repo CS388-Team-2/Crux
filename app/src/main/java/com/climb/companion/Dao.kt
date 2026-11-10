@@ -28,16 +28,16 @@ interface AppDao{
     @Query("Select * from Favorites where userId = :id")
     fun getFavorites(id: Long): Flow<List<Favorites>>
 
-    @Query("Delete from Favorites where id = :fid")
+    @Query("Delete from Favorites where favoriteId = :fid")
     suspend fun deleteFavorites(fid: Long)
 
     //Photo Gallery
     @Insert
     suspend fun insertPhoto(photo: PhotoGallery)
 
-    @Query("Select * from PhotoGallery where logId = :id")
+    @Query("Select * from PhotoGallery where lId = :id")
     fun getPhotos(id: Long): Flow<List<PhotoGallery>>
 
-    @Query("SELECT imagePath FROM PhotoGallery WHERE logId = :id")
+    @Query("SELECT imagePath FROM PhotoGallery WHERE lId = :id")
     suspend fun getPhotoPaths(id: Long): List<String>
 }
