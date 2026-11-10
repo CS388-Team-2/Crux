@@ -11,21 +11,21 @@ interface AppDao{
     @Insert
     suspend fun insertLogin(user: Login)
 
-    @Query("Select * from Login Where Username = :username")
+    @Query("SELECT * FROM Login WHERE Username = :username")
     suspend fun getLogin(username: String): List<Login>
 
     //Climb logs
     @Insert
     suspend fun insertLog(log: ClimbLogs)
 
-    @Query("Select * from ClimbLogs where userId = :id")
+    @Query("SELECT * FROM ClimbLogs WHERE userID = :id")
     fun getLogs(id: Long): Flow<List<ClimbLogs>>
 
     //Favorites
     @Insert
     suspend fun insertFavorite(favorite: Favorites)
 
-    @Query("Select * from Favorites where userId = :id")
+    @Query("SELECT * FROM Favorites WHERE userID = :id")
     fun getFavorites(id: Long): Flow<List<Favorites>>
 
     @Query("Delete from Favorites where favoriteId = :fid")
