@@ -25,19 +25,37 @@ An app that allows users to find nearby gyms, log their climbs in a diary where 
 
 ### 1. User Features (Required and Optional)
 
-**Required Features**
+Checked stories are ones a climber can do in the app today. The feed screen is still a stub, so the Kilter feed story stays open.
 
-1. Scrollable feed of Kilter board setups, where the user can tap a climb and see how the board is set
-2. Logbook where users can log their day of climbing
-3. Post pictures in the logbook
-4. Track climbing distance using phone sensors when the phone is with the user during long climbs
-5. Favorite Kilter board setups so they can be found easily
+**Required**
 
-**Optional Features**
+- [ ] As a climber, I want to scroll a feed of Kilter board setups, so that I can open one and see how the board is set.
+- [ ] As a climber, I want a logbook of my climbing days, so that I can review what I attempted.
+- [ ] As a climber, I want to add photos to a logbook entry, so that I can remember the climb.
+- [ ] As a climber, I want the phone to track the distance I climbed during a session, so that I can see how far I got.
+- [ ] As a climber, I want to favorite Kilter board setups, so that I can find them again later.
 
-1. Find nearby rock climbing gyms using the user's current location
-2. Find outdoor climbing puzzles
-3. Post videos in the logbook
+**Done in sprint 1**
+
+- [x] As a climber, I want a welcome screen that explains the app, so that I can get started.
+- [x] As a climber, I want to allow or skip location, camera, motion, and notifications, so that I can continue to the feed.
+
+**Also planned**
+
+These come from the screen archetypes and the sprint milestones. They were not in the original five required features.
+
+- [ ] As a climber, I want to create an account with a username and password, so that I can keep my logs and favorites on this phone.
+- [ ] As a climber, I want to sign in to an account I already have, so that I can get back to my climbs.
+- [ ] As a climber, I want to change my account settings and permissions, so that I can control what the app is allowed to use.
+- [ ] As a climber, I want to filter the feed by board, angle, and grade, so that I can see climbs that fit the session.
+- [ ] As a climber, I want to log attempts, tops, time, and notes for a session, so that I can save that day to the diary.
+- [ ] As a climber, I want to edit or delete an attempt, so that I can correct a session before I save it.
+
+**Optional**
+
+- [ ] As a climber, I want to find gyms near my current location, so that I can switch the feed to the gym I am at.
+- [ ] As a climber, I want to find outdoor climbing problems, so that I can discover climbs outside the gym.
+- [ ] As a climber, I want to attach a video to a logbook entry, so that I can review the beta later.
 
 ### 2. Screen Archetypes
 
@@ -216,19 +234,53 @@ Digital wireframes for each screen. The source file is the [Climbing App Wirefra
 
 ## GitHub Project board
 
-[Add screenshot of your Project Board with three milestones visible in
-this section]
-<img src="YOUR_WIREFRAME_IMAGE_URL" width=600>
+Project: [CS388 Team 2 — Crux board](https://github.com/orgs/CS388-Team-2/projects)
+
+<img width="1895" height="721" alt="image" src="https://github.com/user-attachments/assets/c2a11e98-19a6-43d9-ad3c-643c596ba152" />
 
 ## Issue cards
 
-- [Add screenshot of your Project Board with the issues that you've been working on for this unit's milestone] <img src="YOUR_WIREFRAME_IMAGE_URL" width=600>
-- [Add screenshot of your Project Board with the issues that you're working on in the **NEXT sprint**. It should include issues for next unit with assigned owners.] <img src="YOUR_WIREFRAME_IMAGE_URL" width=600>
+Sprint 1 (Project Setup) cards:
+
+<img width="1910" height="727" alt="image" src="https://github.com/user-attachments/assets/23b02fa5-7293-4ec5-9b5f-71b2f0c638a8" />
+
+
+
+Next sprint (Milestone 2 on GitHub: _Account creation and settings, Scrollable feed, climb logging_) cards:
+
+<img width="1907" height="878" alt="image" src="https://github.com/user-attachments/assets/97785baa-a28d-48e8-8f30-ef889c77af23" />
 
 ## Issues worked on this sprint
 
-- List the issues you completed this sprint
-- [Add giphy that shows current build progress for Milestone 2. Note: We will be looking for progression of work between Milestone 2 and 3. Make sure your giphys are not duplicated and clearly show the change from Sprint 1 to 2.]
+| Issue | Title | Owner | Sprint 1 outcome |
+|-------|-------|-------|------------------|
+| [#5](https://github.com/CS388-Team-2/Crux/issues/5) | Create Manifest | mFerr16 | Manifest declares `INTERNET`, location, camera, activity recognition, notifications |
+| [#3](https://github.com/CS388-Team-2/Crux/issues/3) | Initial Permissions | alexismulvany | Permissions screen + runtime requests; Skip / Continue → Feed |
+
+_No other Project Setup issues existed on GitHub this sprint; see “Next sprint” below for DB and full UI skeleton work._
+
+## Build progress (Sprint 1)
+
+- Android Studio project builds with Jetpack Compose + Navigation.
+- **Welcome → Permissions → stub Feed** matches wireframes 01–03 at a skeleton level (not pixel-perfect).
+- Room, auth, scrollable feed, favorites, diary, and sensors are **not** implemented yet (planned for GitHub Milestones 2 and 3).
+
+### Demo GIF
+
+Record in Android Studio (**View → Tool Windows → Logcat** area, or device **Screen record**), then export and place at `docs/milestone2-demo.gif`:
+
+<img src="docs/milestone2-demo.gif" width="300" alt="Welcome, permissions flow, and stub Kilter feed">
+
+_Suggested recording flow (≈15–25 s):_ launch app → **Get started** → **Allow permissions** (optional) → **Continue to feed** → scroll stub climb cards.
+
+## User stories / features (Sprint 1)
+
+Checked off in [User Features](#1-user-features-required-and-optional):
+
+- [x] As a climber, I want a welcome screen that explains the app, so that I can get started.
+- [x] As a climber, I want to allow or skip location, camera, motion, and notifications, so that I can continue to the feed.
+
+The Kilter feed, logbook, photos, sensor distance, and favorites stories are still open.
 
 <br>
 
