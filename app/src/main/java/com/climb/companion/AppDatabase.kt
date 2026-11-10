@@ -6,11 +6,11 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 
 @Database(
-    entities = [Login::class, ClimbLogs::class, Favorites::class, PhotoGallery::class],
+    entities = [Login::class, ClimbLogs::class, Favorites::class, PhotoGallery::class, Sessions::class, Attempts::class],
     version = 1
 )
 abstract class AppDatabase : RoomDatabase(){
-    abstract fun AppDao(): AppDao
+    abstract fun appDao(): AppDao
 
     companion object {
 

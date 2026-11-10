@@ -1,63 +1,43 @@
 package com.climb.companion
 
 import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.ui.Modifier
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
-import com.climb.companion.navigation.CruxRoute
-import com.climb.companion.ui.feed.FeedScreen
-import com.climb.companion.ui.permissions.PermissionsScreen
-import com.climb.companion.ui.theme.CruxTheme
-import com.climb.companion.ui.welcome.WelcomeScreen
+import androidx.activity.enableEdgeToEdge
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.fragment.app.Fragment
+import com.google.android.material.bottomnavigation.BottomNavigationView
 
-class MainActivity : ComponentActivity() {
+class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContent {
-            CruxTheme {
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
-                ) {
-                    val navController = rememberNavController()
-                    NavHost(
-                        navController = navController,
-                        startDestination = CruxRoute.Welcome.route,
-                    ) {
-                        composable(CruxRoute.Welcome.route) {
-                            WelcomeScreen(
-                                onGetStarted = {
-                                    navController.navigate(CruxRoute.Permissions.route)
-                                },
-                                onHasAccount = {
-                                    navController.navigate(CruxRoute.Feed.route) {
-                                        popUpTo(CruxRoute.Welcome.route) { inclusive = true }
-                                    }
-                                },
-                            )
-                        }
-                        composable(CruxRoute.Permissions.route) {
-                            PermissionsScreen(
-                                onBack = { navController.popBackStack() },
-                                onContinue = {
-                                    navController.navigate(CruxRoute.Feed.route) {
-                                        popUpTo(CruxRoute.Welcome.route) { inclusive = true }
-                                    }
-                                },
-                            )
-                        }
-                        composable(CruxRoute.Feed.route) {
-                            FeedScreen()
-                        }
-                    }
-                }
-            }
+        enableEdgeToEdge()
+        setContentView(R.layout.activity_main)
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+            insets
         }
+
+        if (savedInstanceState == null) {
+            showFragment(FeedFragment())
+        }
+
+        findViewById<BottomNavigationView>(R.id.bottom_nav).setOnItemSelectedListener { item ->
+            val fragment = when (item.itemId) {
+                R.id.nav_saved -> SavedFragment()
+                R.id.nav_session -> SessionFragment()
+                R.id.nav_diary -> DiaryFragment()
+                else -> FeedFragment()
+            }
+            showFragment(fragment)
+            true
+        }
+    }
+
+    private fun showFragment(fragment: Fragment) {
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.fragment_container, fragment)
+            .commit()
     }
 }
