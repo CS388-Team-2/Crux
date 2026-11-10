@@ -227,6 +227,7 @@ Sprint 1 (Project Setup) cards:
 <img width="1910" height="727" alt="image" src="https://github.com/user-attachments/assets/23b02fa5-7293-4ec5-9b5f-71b2f0c638a8" />
 
 
+
 Next sprint (Milestone 2 on GitHub: _Account creation and settings, Scrollable feed, climb logging_) cards:
 
 <img width="1907" height="878" alt="image" src="https://github.com/user-attachments/assets/97785baa-a28d-48e8-8f30-ef889c77af23" />
