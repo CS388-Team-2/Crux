@@ -218,7 +218,7 @@ Digital wireframes for each screen. The source file is the [Climbing App Wirefra
 
 Project: [CS388 Team 2 — Crux board](https://github.com/orgs/CS388-Team-2/projects)
 
-<img src="docs/milestone2-board-milestones.png" width="600" alt="Project board showing all three milestones">
+<img width="1895" height="721" alt="image" src="https://github.com/user-attachments/assets/c2a11e98-19a6-43d9-ad3c-643c596ba152" />
 
 ## Issue cards
 
