@@ -224,7 +224,8 @@ Project: [CS388 Team 2 — Crux board](https://github.com/orgs/CS388-Team-2/proj
 
 Sprint 1 (Project Setup) cards:
 
-<img src="docs/milestone2-board-sprint1.png" width="600" alt="Current sprint issue cards with status and owners">
+<img width="1910" height="727" alt="image" src="https://github.com/user-attachments/assets/23b02fa5-7293-4ec5-9b5f-71b2f0c638a8" />
+
 
 Next sprint (Milestone 2 on GitHub: _Account creation and settings, Scrollable feed, climb logging_) cards:
 
