@@ -267,11 +267,7 @@ _No other Project Setup issues existed on GitHub this sprint; see “Next sprint
 
 ### Demo GIF
 
-Record in Android Studio (**View → Tool Windows → Logcat** area, or device **Screen record**), then export and place at `docs/milestone2-demo.gif`:
-
-<img src="docs/milestone2-demo.gif" width="300" alt="Welcome, permissions flow, and stub Kilter feed">
-
-_Suggested recording flow (≈15–25 s):_ launch app → **Get started** → **Allow permissions** (optional) → **Continue to feed** → scroll stub climb cards.
+<img width="407" height="906" alt="CruxMilestone1" src="https://github.com/user-attachments/assets/92508745-3b3c-49cd-8592-8db00680280d" />
 
 ## User stories / features (Sprint 1)
 
