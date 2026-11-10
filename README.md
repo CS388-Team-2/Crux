@@ -248,8 +248,7 @@ Next sprint (Milestone 2 on GitHub: _Account creation and settings, Scrollable f
 |-------|-------|-------|------------------|
 | [#5](https://github.com/CS388-Team-2/Crux/issues/5) | Create Manifest | mFerr16 | Manifest declares `INTERNET`, location, camera, activity recognition, notifications |
 | [#3](https://github.com/CS388-Team-2/Crux/issues/3) | Initial Permissions | alexismulvany | Permissions screen + runtime requests; Skip / Continue → Feed |
-
-_No other Project Setup issues existed on GitHub this sprint; see “Next sprint” below for DB and full UI skeleton work._
+| [#6](https://github.com/CS388-Team-2/Crux/issues/6) | Create UI skeleton | DGoble22 | Bottom navigation and screen shells for Feed, Saved, Session, Diary, and the detail flows |
 
 ## Build progress (Sprint 1)
 
