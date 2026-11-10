@@ -229,7 +229,7 @@ Sprint 1 (Project Setup) cards:
 
 Next sprint (Milestone 2 on GitHub: _Account creation and settings, Scrollable feed, climb logging_) cards:
 
-<img src="docs/milestone2-board-sprint2.png" width="600" alt="Next sprint issues with assignees">
+<img width="1907" height="878" alt="image" src="https://github.com/user-attachments/assets/97785baa-a28d-48e8-8f30-ef889c77af23" />
 
 ## Issues worked on this sprint
 
