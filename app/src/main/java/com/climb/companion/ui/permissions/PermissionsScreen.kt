@@ -16,7 +16,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.PermissionStatus
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
+
+@OptIn(ExperimentalPermissionsApi::class)
+private val PermissionStatus.isGranted: Boolean
+    get() = this is PermissionStatus.Granted
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
