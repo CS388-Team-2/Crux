@@ -88,6 +88,7 @@ Screens below match the [Climbing App Wireframe](https://www.figma.com/design/xu
   - User can see elapsed time, attempts, tops, and distance climbed
   - User can log an attempt as Attempted or Topped, by hand or from the sensors
   - User can see each attempt, including ones caught automatically
+  - User can add a video to any attempt afterwards from Edit Attempt
   - User can end the session and turn it into a diary entry
 - **Edit Attempt**
   - User can change an attempt's result, route, note, or video
@@ -142,7 +143,6 @@ The Feed, Saved, and Diary screens also show a "Session active" banner that open
   - Tap a climb → Route Detail
   - Session banner → Session
 - Session
-  - Recording → Record
   - Change → Saved, to pick which climb attempts are logged to
   - Tap an attempt → Edit Attempt
   - End session → Diary Entry, filled in with this session's time, attempts, tops, and distance
