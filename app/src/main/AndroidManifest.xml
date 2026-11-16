@@ -44,7 +44,10 @@
         <activity android:name=".GymPickerActivity" android:exported="false" />
         <activity android:name=".RouteDetailActivity" android:exported="false" />
         <activity android:name=".RecordActivity" android:exported="false" />
-        <activity android:name=".EditAttemptActivity" android:exported="false" />
+        <activity
+            android:name=".EditAttemptActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
         <activity android:name=".DiaryEntryActivity" android:exported="false" />
     </application>
 

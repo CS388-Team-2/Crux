@@ -36,14 +36,22 @@ interface AppDao{
     @Query("UPDATE Sessions SET endTime = :endTime WHERE sessionId = :sessionId")
     suspend fun endSession(sessionId: Long, endTime: String)
 
+    @Update
+    suspend fun updateSession(session: Sessions)
+
 
 
     //Attempts
     @Insert
     suspend fun insertAttempt(attempt: Attempts)
 
-    @Query("SELECT * FROM Attempts WHERE sId = :id")
+    // All attempts in one session, newest first
+    @Query("SELECT * FROM Attempts WHERE sId = :id ORDER BY attemptId DESC")
     fun getAttempt(id: Long): Flow<List<Attempts>>
+
+    // One attempt by its own id (for Edit Attempt)
+    @Query("SELECT * FROM Attempts WHERE attemptId = :id")
+    suspend fun getAttemptById(id: Long): List<Attempts>
 
     @Update
     suspend fun updateAttempt(attempt: Attempts)

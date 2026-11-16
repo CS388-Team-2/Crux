@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Small gray section heading, e.g. "RESULT" -->
+    <style name="SectionLabel">
+        <item name="android:textColor">@color/crux_muted</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:letterSpacing">0.06</item>
+    </style>
+</resources>

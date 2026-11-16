@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Palette from the Climbing App Wireframe (Figma) -->
+    <color name="crux_white">#FFFFFF</color>
+    <color name="crux_ink">#212121</color>
+    <color name="crux_muted">#888888</color>
+    <color name="crux_surface">#EEEEEE</color>
+    <color name="crux_plot_bg">#F5F5F5</color>
+    <color name="crux_border">#E0E0E0</color>
+    <color name="crux_outline">#BDBDBD</color>
+    <color name="crux_dark_gray">#424242</color>
+    <color name="crux_hold_hand">#616161</color>
+    <color name="crux_hold_foot">#9E9E9E</color>
+    <color name="crux_ripple">#33000000</color>
+    <color name="crux_ripple_light">#33FFFFFF</color>
+</resources>
