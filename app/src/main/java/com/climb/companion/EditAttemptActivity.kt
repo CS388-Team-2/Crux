@@ -19,15 +19,14 @@ import kotlinx.coroutines.withContext
 
 class EditAttemptActivity : AppCompatActivity() {
 
-    private lateinit var attempt: AttemptItem
+    private lateinit var dao: AppDao
+    private lateinit var attempt: Attempts
     private lateinit var attemptedButton: TextView
     private lateinit var toppedButton: TextView
-    private lateinit var videoRow: View
     private lateinit var noteInput: EditText
 
     // Edits are kept here and only saved when the user taps Save.
     private var result = "Attempted"
-    private var clipSeconds = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,13 +40,13 @@ class EditAttemptActivity : AppCompatActivity() {
 
         attemptedButton = findViewById(R.id.result_attempted)
         toppedButton = findViewById(R.id.result_topped)
-        videoRow = findViewById(R.id.video_attached)
+        dao = AppDatabase.getInstance(this).appDao()
         noteInput = findViewById(R.id.note_input)
 
         val attemptId = intent.getLongExtra("attemptId", -1L)
         lifecycleScope.launch {
             val found = withContext(Dispatchers.IO) {
-                SessionData.getAttempt(attemptId)
+                dao.getAttemptById(attemptId).firstOrNull()
             }
             if (found == null) {
                 finish()
@@ -60,16 +59,14 @@ class EditAttemptActivity : AppCompatActivity() {
 
     private fun showAttempt() {
         result = attempt.result
-        clipSeconds = attempt.clipSeconds
 
-        findViewById<TextView>(R.id.edit_title).text = "Attempt ${attempt.attemptId}"
+        findViewById<TextView>(R.id.edit_title).text = "Attempt ${intent.getIntExtra("attemptNumber", 0)}"
         findViewById<TextView>(R.id.edit_subtitle).text = if (attempt.isAuto) {
-            "${attempt.time} · max ${attempt.maxHeight} m"
+            "${attempt.time} · max ${"%.1f".format(attempt.maxHeight)} m"
         } else {
             attempt.time
         }
-        findViewById<TextView>(R.id.route_name).text = attempt.route
-        findViewById<TextView>(R.id.route_detail).text = SessionData.ROUTE_DETAIL
+        findViewById<TextView>(R.id.route_name).text = attempt.route ?: ""
         noteInput.setText(attempt.note)
 
         // The graph and board only make show when the phone's sensors caught the attempt
@@ -77,7 +74,6 @@ class EditAttemptActivity : AppCompatActivity() {
         sensorGroup.visibility = if (attempt.isAuto) View.VISIBLE else View.GONE
 
         showResult()
-        showVideo()
 
         findViewById<View>(R.id.edit_close).setOnClickListener { finish() }
 
@@ -101,21 +97,15 @@ class EditAttemptActivity : AppCompatActivity() {
             startActivity(Intent(this, RecordActivity::class.java))
         }
         findViewById<View>(R.id.video_record).setOnClickListener(openRecord)
-        findViewById<View>(R.id.video_replace).setOnClickListener(openRecord)
-        findViewById<View>(R.id.video_remove).setOnClickListener {
-            clipSeconds = 0
-            showVideo()
-        }
 
         findViewById<View>(R.id.edit_save).setOnClickListener {
             lifecycleScope.launch {
                 val updated = attempt.copy(
                     result = result,
                     note = noteInput.text.toString().trim(),
-                    clipSeconds = clipSeconds,
                 )
                 withContext(Dispatchers.IO) {
-                    SessionData.updateAttempt(updated)
+                    dao.updateAttempt(updated)
                 }
                 finish()
             }
@@ -123,7 +113,7 @@ class EditAttemptActivity : AppCompatActivity() {
         findViewById<View>(R.id.edit_delete).setOnClickListener {
             lifecycleScope.launch {
                 withContext(Dispatchers.IO) {
-                    SessionData.deleteAttempt(attempt.attemptId)
+                    dao.deleteAttempt(attempt.attemptId)
                 }
                 finish()
             }
@@ -141,15 +131,5 @@ class EditAttemptActivity : AppCompatActivity() {
         other.setBackgroundResource(0)
         other.setTextColor(ContextCompat.getColor(this, R.color.crux_muted))
         other.setTypeface(null, Typeface.NORMAL)
-    }
-
-    // Shows the attached video, or hides that row when there is none
-    private fun showVideo() {
-        if (clipSeconds > 0) {
-            videoRow.visibility = View.VISIBLE
-            findViewById<TextView>(R.id.video_duration).text = formatClip(clipSeconds)
-        } else {
-            videoRow.visibility = View.GONE
-        }
     }
 }
