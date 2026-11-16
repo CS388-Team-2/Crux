@@ -15,7 +15,41 @@
         android:text="Session"
         android:textSize="20sp" />
 
+    <!-- Shown when no session is running -->
     <LinearLayout
+        android:id="@+id/start_group"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="16dp"
+        android:visibility="gone">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="No session running"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="Start a session to track your attempts"
+            android:textColor="@color/crux_muted" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/start_session"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Start session" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/session_header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"

@@ -8,9 +8,10 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 
+// list is newest first
 class AttemptAdapter(
-    private val attempts: List<AttemptItem>,
-    private val onAttemptClick: (AttemptItem) -> Unit,
+    private val attempts: List<Attempts>,
+    private val onAttemptClick: (Attempts, Int) -> Unit,
 ) : RecyclerView.Adapter<AttemptAdapter.AttemptViewHolder>() {
 
     class AttemptViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -28,25 +29,19 @@ class AttemptAdapter(
 
     override fun onBindViewHolder(holder: AttemptViewHolder, position: Int) {
         val attempt = attempts[position]
+        val number = attempts.size - position
         val context = holder.itemView.context
 
-        holder.titleText.text = "Attempt ${attempt.attemptId}"
+        // example: "Attempt 3 - Crimp Lord · V5" (just "Attempt 3" if there is no route)
+        val route = attempt.route
+        holder.titleText.text = if (route.isNullOrBlank()) "Attempt $number" else "Attempt $number - $route"
 
-        // A clip length replaces the other detail so the row stays on one line
         if (attempt.isAuto) {
             holder.iconImage.setImageResource(R.drawable.ic_baseline_show_chart_24)
-            holder.subtitleText.text = if (attempt.clipSeconds > 0) {
-                "Auto-detected · ${formatClip(attempt.clipSeconds)} clip"
-            } else {
-                "Auto-detected · max ${attempt.maxHeight} m"
-            }
+            holder.subtitleText.text = "Auto-detected · max ${"%.1f".format(attempt.maxHeight)} m"
         } else {
             holder.iconImage.setImageResource(R.drawable.ic_baseline_back_hand_24)
-            holder.subtitleText.text = if (attempt.clipSeconds > 0) {
-                "Logged manually · ${formatClip(attempt.clipSeconds)} clip"
-            } else {
-                "Logged manually · ${attempt.time}"
-            }
+            holder.subtitleText.text = "Logged manually · ${attempt.time}"
         }
 
         holder.resultTag.text = attempt.result
@@ -58,7 +53,7 @@ class AttemptAdapter(
             holder.resultTag.setTextColor(ContextCompat.getColor(context, R.color.crux_ink))
         }
 
-        holder.itemView.setOnClickListener { onAttemptClick(attempt) }
+        holder.itemView.setOnClickListener { onAttemptClick(attempt, number) }
     }
 
     override fun getItemCount(): Int = attempts.size
