@@ -9,9 +9,19 @@ import com.google.android.material.button.MaterialButton
 
 class FeedClimbAdapter(
     private val climbs: List<FeedClimb>,
+    savedUuids: Set<String>,
     private val onSaveClick: (FeedClimb) -> Unit,
     private val onDetailsClick: (FeedClimb) -> Unit,
 ) : RecyclerView.Adapter<FeedClimbAdapter.ClimbViewHolder>() {
+
+    private val savedUuids = savedUuids.toMutableSet()
+
+    fun setSaved(uuid: String, saved: Boolean) {
+        val changed = if (saved) savedUuids.add(uuid) else savedUuids.remove(uuid)
+        if (!changed) return
+        val index = climbs.indexOfFirst { it.uuid == uuid }
+        if (index >= 0) notifyItemChanged(index)
+    }
 
     class ClimbViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val nameText: TextView = itemView.findViewById(R.id.climb_name_text)
@@ -36,6 +46,7 @@ class FeedClimbAdapter(
         holder.nameText.text = climb.name
         holder.gradeText.text = climb.grade
         holder.angleText.text = climb.angle
+        holder.saveButton.text = if (climb.uuid in savedUuids) "Saved" else "Save"
         holder.saveButton.setOnClickListener { onSaveClick(climb) }
         holder.detailsButton.setOnClickListener { onDetailsClick(climb) }
     }

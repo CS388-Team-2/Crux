@@ -55,6 +55,9 @@ interface AppDao{
     @Insert
     suspend fun insertFavorite(favorite: Favorites)
 
+    @Query("SELECT * FROM Favorites WHERE userId = :userId AND boardID = :boardId AND angle = :angle LIMIT 1")
+    suspend fun findFavorite(userId: Long, boardId: String, angle: Int): Favorites?
+
     @Query("SELECT * FROM Favorites WHERE userID = :id")
     fun getFavorites(id: Long): Flow<List<Favorites>>
 
