@@ -54,6 +54,7 @@ data class Sessions(
     val distance: Double?,
     val sessionTime: Long?,
     val endTime: String? = null,
+    val startMillis: Long = 0, // start time in milliseconds, so the timer can count up from it
 
     @ColumnInfo(name = "userId")
     val uId: Long,
@@ -74,8 +75,14 @@ data class Attempts(
     val note: String?,
 
     @ColumnInfo(name = "sId")
-    val sessionId: Long
+    val sessionId: Long,
 
+    val time: String = "",                // shown on the row, e.g. "7:41 PM"
+    val isAuto: Boolean = false,          // caught by the sensors instead of logged by hand
+    val maxHeight: Double = 0.0,          // meters, from the barometer
+    val fallHeight: Double? = null,       // meters, where the fall happened (null if no fall)
+    val durationSeconds: Int = 0,
+    val accelSamples: String? = null,     // g-force readings for the graph, comma separated
 )
 
 @Entity(
