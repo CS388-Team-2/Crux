@@ -5,7 +5,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -21,6 +23,16 @@ class FeedFragment : Fragment() {
 
     private val savesInFlight = mutableSetOf<String>()
     private var feedAdapter: FeedClimbAdapter? = null
+    private var feedList: RecyclerView? = null
+    private var feedEmpty: TextView? = null
+
+    private val filterLauncher = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        if (result.resultCode == android.app.Activity.RESULT_OK) {
+            loadFeed()
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -33,16 +45,20 @@ class FeedFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val openFilter = View.OnClickListener {
-            startActivity(Intent(requireContext(), FilterActivity::class.java))
+        view.findViewById<View>(R.id.filter_button).setOnClickListener {
+            filterLauncher.launch(Intent(requireContext(), FilterActivity::class.java))
         }
-        view.findViewById<View>(R.id.filter_button).setOnClickListener(openFilter)
-        view.findViewById<View>(R.id.gym_chip).setOnClickListener(openFilter)
 
-        val feedList = view.findViewById<RecyclerView>(R.id.feed_list)
-        feedList.layoutManager = LinearLayoutManager(requireContext())
-        PagerSnapHelper().attachToRecyclerView(feedList)
+        feedEmpty = view.findViewById(R.id.feed_empty)
+        val list = view.findViewById<RecyclerView>(R.id.feed_list)
+        feedList = list
+        list.layoutManager = LinearLayoutManager(requireContext())
+        PagerSnapHelper().attachToRecyclerView(list)
+        loadFeed()
+    }
 
+    private fun loadFeed() {
+        val list = feedList ?: return
         viewLifecycleOwner.lifecycleScope.launch {
             val appContext = requireContext().applicationContext
             try {
@@ -56,14 +72,15 @@ class FeedFragment : Fragment() {
                         AppDatabase.getInstance(appContext).appDao()
                             .getFavorites(userId)
                             .first()
-                            .filter { it.angle == FEED_ANGLE }
                             .map { it.boardID }
                             .toSet()
                     }
                 } else {
                     emptySet()
                 }
-                val feedClimbs = climbs.map { climb ->
+                val filter = FeedFilterStore.load(appContext)
+                val visible = filter.matching(climbs, savedIds)
+                val feedClimbs = visible.map { climb ->
                     FeedClimb(
                         uuid = climb.uuid,
                         name = climb.name,
@@ -78,7 +95,8 @@ class FeedFragment : Fragment() {
                     onDetailsClick = { climb -> openRoute(climb.name) },
                 )
                 feedAdapter = adapter
-                feedList.adapter = adapter
+                list.adapter = adapter
+                feedEmpty?.visibility = if (feedClimbs.isEmpty()) View.VISIBLE else View.GONE
             } catch (e: CancellationException) {
                 throw e
             } catch (e: Exception) {
@@ -114,6 +132,9 @@ class FeedFragment : Fragment() {
                         )
                     }
                     feedAdapter?.setSaved(climb.uuid, true)
+                    if (FeedFilterStore.load(appContext).hideSaved) {
+                        loadFeed()
+                    }
                 } else {
                     withContext(Dispatchers.IO) {
                         dao.deleteFavorites(existing.favoriteId)
