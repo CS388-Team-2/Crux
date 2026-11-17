@@ -69,9 +69,10 @@ class EditAttemptActivity : AppCompatActivity() {
         findViewById<TextView>(R.id.route_name).text = attempt.route ?: ""
         noteInput.setText(attempt.note)
 
-        // The graph and board only make show when the phone's sensors caught the attempt
+        // The x y graph only shows when the phone's sensors caught the attempt
         val sensorGroup = findViewById<View>(R.id.sensor_group)
         sensorGroup.visibility = if (attempt.isAuto) View.VISIBLE else View.GONE
+        findViewById<PathGraphView>(R.id.path_graph).setPath(attempt.path)
 
         showResult()
 

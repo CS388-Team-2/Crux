@@ -75,7 +75,7 @@ class SessionFragment : Fragment() {
 
         dao = AppDatabase.getInstance(requireContext()).appDao()
         userId = UserSession.userId(requireContext())
-        tracker = AttemptTracker(requireContext()) { height, seconds -> saveAutoAttempt(height, seconds) }
+        tracker = AttemptTracker(requireContext()) { height, seconds, path -> saveAutoAttempt(height, seconds, path) }
 
         startGroup = view.findViewById(R.id.start_group)
         sessionHeader = view.findViewById(R.id.session_header)
@@ -236,7 +236,7 @@ class SessionFragment : Fragment() {
     }
 
     // Called by the tracker when the barometer finds a finished attempt
-    private fun saveAutoAttempt(maxHeight: Double, seconds: Int) {
+    private fun saveAutoAttempt(maxHeight: Double, seconds: Int, path: String) {
         val current = session ?: return
         insertAttempt(
             Attempts(
@@ -248,6 +248,7 @@ class SessionFragment : Fragment() {
                 isAuto = true,
                 maxHeight = maxHeight,
                 durationSeconds = seconds,
+                path = path,
             )
         )
     }
