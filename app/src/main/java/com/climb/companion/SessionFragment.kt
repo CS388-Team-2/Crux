@@ -28,6 +28,7 @@ class SessionFragment : Fragment() {
     private val routeName = "Crimp Lord · V5"
 
     private lateinit var dao: AppDao
+    private lateinit var tracker: AttemptTracker
     private var userId = -1L
 
     // The running session (null when none) and its attempts, newest first
@@ -74,6 +75,7 @@ class SessionFragment : Fragment() {
 
         dao = AppDatabase.getInstance(requireContext()).appDao()
         userId = UserSession.userId(requireContext())
+        tracker = AttemptTracker(requireContext()) { height, seconds -> saveAutoAttempt(height, seconds) }
 
         startGroup = view.findViewById(R.id.start_group)
         sessionHeader = view.findViewById(R.id.session_header)
@@ -111,11 +113,21 @@ class SessionFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         handler.post(timerTick)
+        updateTracking()
     }
 
     override fun onPause() {
         super.onPause()
         handler.removeCallbacks(timerTick)
+        updateTracking()
+    }
+
+    // The sensors only run while a session is running and this screen is showing
+    // The screen stays on so Android keeps sending sensor readings
+    private fun updateTracking() {
+        val tracking = session != null && isResumed
+        if (tracking) tracker.start() else tracker.stop()
+        view?.keepScreenOn = tracking
     }
 
     // Follows the attempts of the running session so the list and tiles stay up to date
@@ -142,6 +154,7 @@ class SessionFragment : Fragment() {
             sessionHeader.visibility = View.GONE
             attemptsList.visibility = View.GONE
             endButton.visibility = View.GONE
+            updateTracking()
             return
         }
         startGroup.visibility = View.GONE
@@ -151,6 +164,7 @@ class SessionFragment : Fragment() {
         timerSubtitle.text = "$gymName · started ${current.startTime}"
         routeText.text = current.route
         showAttempts()
+        updateTracking()
     }
 
     private fun showAttempts() {
@@ -180,6 +194,9 @@ class SessionFragment : Fragment() {
             startMillis = now.time,
             uId = userId,
         )
+        if (!tracker.hasBarometer) {
+            Toast.makeText(requireContext(), "No barometer, so log attempts by hand", Toast.LENGTH_LONG).show()
+        }
         lifecycleScope.launch {
             withContext(Dispatchers.IO) {
                 dao.insertSession(newSession)
@@ -204,16 +221,38 @@ class SessionFragment : Fragment() {
         }
     }
 
-    // Logs an attempt by hand (the Attempted and Topped buttons).
+    // Logs an attempt by hand (the Attempted and Topped buttons)
     private fun logAttempt(result: String) {
         val current = session ?: return
-        val attempt = Attempts(
-            result = result,
-            route = current.route,
-            note = "",
-            sessionId = current.sessionId,
-            time = SimpleDateFormat("h:mm a", Locale.getDefault()).format(Date()),
+        insertAttempt(
+            Attempts(
+                result = result,
+                route = current.route,
+                note = "",
+                sessionId = current.sessionId,
+                time = SimpleDateFormat("h:mm a", Locale.getDefault()).format(Date()),
+            )
         )
+    }
+
+    // Called by the tracker when the barometer finds a finished attempt
+    private fun saveAutoAttempt(maxHeight: Double, seconds: Int) {
+        val current = session ?: return
+        insertAttempt(
+            Attempts(
+                result = "Attempted",
+                route = current.route,
+                note = "",
+                sessionId = current.sessionId,
+                time = SimpleDateFormat("h:mm a", Locale.getDefault()).format(Date()),
+                isAuto = true,
+                maxHeight = maxHeight,
+                durationSeconds = seconds,
+            )
+        )
+    }
+
+    private fun insertAttempt(attempt: Attempts) {
         lifecycleScope.launch {
             withContext(Dispatchers.IO) {
                 dao.insertAttempt(attempt)
