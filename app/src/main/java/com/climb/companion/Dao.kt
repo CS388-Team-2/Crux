@@ -19,8 +19,14 @@ interface AppDao{
     @Insert
     suspend fun insertLog(log: ClimbLogs)
 
-    @Query("SELECT * FROM ClimbLogs WHERE userID = :id")
+    @Query("SELECT * FROM ClimbLogs WHERE userID = :id Order by logId DESC")
     fun getLogs(id: Long): Flow<List<ClimbLogs>>
+
+    @Query("UPDATE ClimbLogs Set title = :title, notes= :notes WHERE logID = :id")
+    suspend fun updateLog(title: String, notes: String, id: Long)
+
+    @Query("SELECT * FROM ClimbLogs WHERE logId = :id")
+    suspend fun getSingleLog(id: Long): List<ClimbLogs>
 
     //Sessions
     @Insert

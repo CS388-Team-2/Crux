@@ -22,10 +22,11 @@ data class Login(
         childColumns = ["userId"],
         onDelete = ForeignKey.CASCADE
     )],
-    indices = [Index(value = ["userId", "date"], unique = true)]
+    indices = [Index(value = ["userId"])]
 )
 data class ClimbLogs(
     @PrimaryKey(autoGenerate = true) val logId: Long = 0,
+    val title: String?, //new column
     val date: String, //yyyy-mm-dd
     val notes: String?,
     val tops: Int?,

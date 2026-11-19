@@ -1,4 +1,7 @@
 package com.climb.companion
 
-class Application {
+import android.app.Application
+
+class CruxApplication : Application() {
+    val db by lazy { AppDatabase.getInstance(this) }
 }
