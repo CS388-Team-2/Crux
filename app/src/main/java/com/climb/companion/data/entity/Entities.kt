@@ -101,6 +101,9 @@ data class Favorites(
     val boardID: String,
     val angle: Int?,
     val Attempted: Boolean = false,
+    val climbName: String? = null,
+    val grade: String? = null,
+    val photoUrl: String? = null,
 
     @ColumnInfo(name = "userId")
     val uId: Long,

@@ -4,6 +4,8 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.migration.Migration
+import androidx.sqlite.db.SupportSQLiteDatabase
 import com.climb.companion.data.entity.Attempts
 import com.climb.companion.data.entity.ClimbLogs
 import com.climb.companion.data.entity.Favorites
@@ -13,7 +15,7 @@ import com.climb.companion.data.entity.Sessions
 
 @Database(
     entities = [Login::class, ClimbLogs::class, Favorites::class, PhotoGallery::class, Sessions::class, Attempts::class],
-    version = 3
+    version = 4
 )
 abstract class AppDatabase : RoomDatabase(){
     abstract fun appDao(): AppDao
@@ -33,7 +35,16 @@ abstract class AppDatabase : RoomDatabase(){
                 context.applicationContext,
                 AppDatabase::class.java, "app-db"
             )
+                .addMigrations(MIGRATION_3_4)
                 .fallbackToDestructiveMigration()
                 .build()
+
+        private val MIGRATION_3_4 = object : Migration(3, 4) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL("ALTER TABLE Favorites ADD COLUMN climbName TEXT")
+                db.execSQL("ALTER TABLE Favorites ADD COLUMN grade TEXT")
+                db.execSQL("ALTER TABLE Favorites ADD COLUMN photoUrl TEXT")
+            }
+        }
     }
 }

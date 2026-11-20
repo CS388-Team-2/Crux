@@ -18,11 +18,13 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="@drawable/bg_gym_chip"
-            android:clickable="false"
-            android:focusable="false"
+            android:clickable="true"
+            android:contentDescription="Indoor climbs. Tap to switch to outdoor."
+            android:focusable="true"
+            android:foreground="?android:attr/selectableItemBackground"
             android:paddingHorizontal="14dp"
             android:paddingVertical="10dp"
-            android:text="Randolf Climbing Center • Kilter • 40°"
+            android:text="Indoor"
             android:textSize="14sp" />
 
         <Button

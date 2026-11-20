@@ -56,8 +56,18 @@ class SavedFragment : Fragment() {
                             .getAll()
                             .associateBy { it.uuid }
                         favorites.mapNotNull { favorite ->
-                            val climb = catalog[favorite.boardID] ?: return@mapNotNull null
-                            SavedClimbRow(name = climb.name, grade = climb.grade)
+                            val climb = catalog[favorite.boardID]
+                            if (climb != null) {
+                                SavedClimbRow(name = climb.name, grade = climb.grade)
+                            } else {
+                                val name = favorite.climbName?.takeIf { it.isNotBlank() }
+                                    ?: return@mapNotNull null
+                                SavedClimbRow(
+                                    name = name,
+                                    grade = favorite.grade?.takeIf { it.isNotBlank() } ?: "Ungraded",
+                                    outdoor = true,
+                                )
+                            }
                         }
                     }
                 }
@@ -72,6 +82,7 @@ class SavedFragment : Fragment() {
             if (!isAdded) return@launch
             empty.visibility = if (rows.isEmpty()) View.VISIBLE else View.GONE
             list.adapter = SavedClimbAdapter(rows) { row ->
+                if (row.outdoor) return@SavedClimbAdapter
                 startActivity(
                     Intent(requireContext(), RouteDetailActivity::class.java)
                         .putExtra(RouteDetailActivity.EXTRA_TITLE, row.name)
