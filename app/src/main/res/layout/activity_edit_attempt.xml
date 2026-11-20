@@ -70,7 +70,7 @@
                 android:layout_marginTop="7dp"
                 android:text="CLIMB PATH" />
 
-            <com.climb.companion.PathGraphView
+            <com.climb.companion.ui.session.PathGraphView
                 android:id="@+id/path_graph"
                 android:layout_width="match_parent"
                 android:layout_height="240dp"

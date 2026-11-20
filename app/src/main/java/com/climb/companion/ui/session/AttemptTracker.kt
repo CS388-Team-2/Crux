@@ -1,4 +1,4 @@
-package com.climb.companion
+package com.climb.companion.ui.session
 
 import android.content.Context
 import android.hardware.Sensor
