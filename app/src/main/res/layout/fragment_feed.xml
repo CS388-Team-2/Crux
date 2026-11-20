@@ -18,6 +18,8 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="@drawable/bg_gym_chip"
+            android:clickable="false"
+            android:focusable="false"
             android:paddingHorizontal="14dp"
             android:paddingVertical="10dp"
             android:text="Randolf Climbing Center • Kilter • 40°"
@@ -28,10 +30,21 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
+            android:contentDescription="Filter climbs"
             android:minWidth="48dp"
             android:text="☰"
             android:textSize="18sp" />
     </LinearLayout>
+
+    <TextView
+        android:id="@+id/feed_empty"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="24dp"
+        android:text="No climbs match these filters."
+        android:textColor="@color/crux_muted"
+        android:textSize="16sp"
+        android:visibility="gone" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/feed_list"
