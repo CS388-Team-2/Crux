@@ -1,4 +1,4 @@
-package com.climb.companion.ui.welcome
+package com.climb.companion.ui.auth
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column

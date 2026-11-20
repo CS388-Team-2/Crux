@@ -1,6 +1,7 @@
-package com.climb.companion
+package com.climb.companion.ui.saved
 
 import android.os.Bundle
+import com.climb.companion.R
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup

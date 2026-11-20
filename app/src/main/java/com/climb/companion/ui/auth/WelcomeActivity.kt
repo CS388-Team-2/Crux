@@ -1,6 +1,7 @@
-package com.climb.companion
+package com.climb.companion.ui.auth
 
 import android.content.Intent
+import com.climb.companion.R
 import android.os.Bundle
 import android.widget.Button
 import androidx.activity.enableEdgeToEdge

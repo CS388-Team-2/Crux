@@ -1,6 +1,10 @@
-package com.climb.companion
+package com.climb.companion.ui.session
 
 import android.content.Intent
+import com.climb.companion.R
+import com.climb.companion.data.AppDao
+import com.climb.companion.data.AppDatabase
+import com.climb.companion.data.entity.Attempts
 import android.graphics.Typeface
 import android.os.Bundle
 import android.view.View
