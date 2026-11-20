@@ -1,6 +1,8 @@
-package com.climb.companion
+package com.climb.companion.ui.session
 
 import android.view.LayoutInflater
+import com.climb.companion.R
+import com.climb.companion.data.entity.Attempts
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView

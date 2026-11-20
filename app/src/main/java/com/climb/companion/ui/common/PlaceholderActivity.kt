@@ -1,6 +1,7 @@
-package com.climb.companion
+package com.climb.companion.ui.common
 
 import android.os.Bundle
+import com.climb.companion.R
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 

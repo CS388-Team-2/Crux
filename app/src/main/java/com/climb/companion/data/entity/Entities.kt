@@ -1,4 +1,4 @@
-package com.climb.companion
+package com.climb.companion.data.entity
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity

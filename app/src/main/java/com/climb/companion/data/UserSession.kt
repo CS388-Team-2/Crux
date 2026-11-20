@@ -1,4 +1,4 @@
-package com.climb.companion
+package com.climb.companion.data
 
 import android.content.Context
 

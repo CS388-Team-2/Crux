@@ -1,6 +1,10 @@
-package com.climb.companion
+package com.climb.companion.ui.auth
 
 import android.content.Intent
+import com.climb.companion.R
+import com.climb.companion.data.AppDatabase
+import com.climb.companion.data.UserSession
+import com.climb.companion.ui.permissions.PermissionsActivity
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText

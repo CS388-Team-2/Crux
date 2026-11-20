@@ -1,4 +1,4 @@
-package com.climb.companion
+package com.climb.companion.ui.feed
 
 data class FeedClimb(
     val name: String,
