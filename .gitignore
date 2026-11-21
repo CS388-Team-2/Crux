@@ -54,6 +54,9 @@ replay_pid*
 *.tar.gz
 *.rar
 
+# Full board databases stay outside the repo. The feed uses assets/feed_climbs.json.
+*.db
+
 # Other
 .mtj.tmp/
 *.ctxt

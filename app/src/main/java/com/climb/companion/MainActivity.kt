@@ -6,6 +6,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
+import com.climb.companion.ui.diary.DiaryFragment
+import com.climb.companion.ui.feed.FeedFragment
+import com.climb.companion.ui.saved.SavedFragment
+import com.climb.companion.ui.session.SessionFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class MainActivity : AppCompatActivity() {
@@ -15,7 +19,8 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+            // Bottom inset is handled by BottomNavigationView itself; padding it here too doubles the gap.
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, 0)
             insets
         }
 
