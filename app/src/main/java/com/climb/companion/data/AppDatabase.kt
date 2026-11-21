@@ -44,6 +44,37 @@ abstract class AppDatabase : RoomDatabase(){
                 db.execSQL("ALTER TABLE Favorites ADD COLUMN climbName TEXT")
                 db.execSQL("ALTER TABLE Favorites ADD COLUMN grade TEXT")
                 db.execSQL("ALTER TABLE Favorites ADD COLUMN photoUrl TEXT")
+                // Version 3 stored fallHeight and accelSamples. The current table stores path instead.
+                // SQLite on older phones cannot drop a column, so the table is rebuilt.
+                db.execSQL(
+                    """
+                    CREATE TABLE IF NOT EXISTS `Attempts_new` (
+                        `attemptId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+                        `result` TEXT NOT NULL,
+                        `route` TEXT,
+                        `note` TEXT,
+                        `sId` INTEGER NOT NULL,
+                        `time` TEXT NOT NULL,
+                        `isAuto` INTEGER NOT NULL,
+                        `maxHeight` REAL NOT NULL,
+                        `durationSeconds` INTEGER NOT NULL,
+                        `path` TEXT,
+                        FOREIGN KEY(`sId`) REFERENCES `Sessions`(`sessionId`)
+                            ON UPDATE NO ACTION ON DELETE CASCADE
+                    )
+                    """.trimIndent()
+                )
+                db.execSQL(
+                    """
+                    INSERT INTO Attempts_new (
+                        attemptId, result, route, note, sId, time, isAuto, maxHeight, durationSeconds, path
+                    )
+                    SELECT attemptId, result, route, note, sId, time, isAuto, maxHeight, durationSeconds, NULL
+                    FROM Attempts
+                    """.trimIndent()
+                )
+                db.execSQL("DROP TABLE Attempts")
+                db.execSQL("ALTER TABLE Attempts_new RENAME TO Attempts")
             }
         }
     }
