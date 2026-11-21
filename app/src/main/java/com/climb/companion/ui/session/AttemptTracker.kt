@@ -73,7 +73,8 @@ class AttemptTracker(
         if (!climbing || seconds > 0.5) return
 
         // Ignore tiny readings 
-        val accel = if (Math.abs(event.values[0]) < noiseLimit) 0.0 else event.values[0].toDouble()
+        // The sign is flipped so the path is right when the phone's screen faces the climber
+        val accel = if (Math.abs(event.values[0]) < noiseLimit) 0.0 else -event.values[0].toDouble()
 
         speed = (speed + accel * seconds) * Math.exp(-seconds / fadeSeconds)
         x += speed * seconds
