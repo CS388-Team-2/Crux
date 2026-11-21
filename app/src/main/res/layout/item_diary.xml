@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/diaryEntryFragment"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="16sp"
+    android:layout_marginHorizontal="16dp"
+    android:layout_marginVertical="8dp"
+    android:background="@drawable/diary_border"
+    >
+
+    <TextView
+        android:id="@+id/diaryEntryDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Thu, Oct 29"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/diaryEntryTitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="15dp"
+        android:text="Movement Gowanus"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toEndOf="@id/diaryEntryDate"
+        app:layout_constraintTop_toTopOf="@id/diaryEntryDate"
+        app:layout_constraintBottom_toBottomOf="@id/diaryEntryDate"
+        app:layout_constraintEnd_toEndOf="@id/diaryEntryDistance"
+        android:maxLines="1"
+        android:ellipsize="end"
+        />
+
+    <TextView
+        android:id="@+id/diaryArrayIcon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="&gt;"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/diaryEntryDate"
+        app:layout_constraintBottom_toBottomOf="@id/diaryEntryDate"
+        />
+
+    <TextView
+        android:id="@+id/diaryEntryTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="1hr 12m"
+        android:textSize="15sp"
+        app:layout_constraintStart_toStartOf="@id/diaryEntryDate"
+        app:layout_constraintTop_toBottomOf="@id/diaryEntryDate"
+         />
+
+    <TextView
+        android:id="@+id/diaryEntryAttempts"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:text="14 attempts"
+        android:textSize="15sp"
+        app:layout_constraintStart_toEndOf="@id/diaryEntryTime"
+        app:layout_constraintTop_toTopOf="@id/diaryEntryTime"
+        app:layout_constraintBottom_toBottomOf="@id/diaryEntryTime"
+        />
+
+    <TextView
+        android:id="@+id/diaryEntryTops"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:text="3 Tops"
+        android:textSize="15sp"
+        app:layout_constraintStart_toEndOf="@id/diaryEntryAttempts"
+        app:layout_constraintTop_toTopOf="@id/diaryEntryAttempts"
+        app:layout_constraintBottom_toBottomOf="@id/diaryEntryAttempts"
+        />
+
+    <TextView
+        android:id="@+id/diaryEntryDistance"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:text="52 m climbed"
+        android:textSize="15sp"
+        app:layout_constraintStart_toEndOf="@id/diaryEntryTops"
+        app:layout_constraintTop_toTopOf="@id/diaryEntryTops"
+        app:layout_constraintBottom_toBottomOf="@id/diaryEntryTops"
+        />
+
+    <TextView
+        android:id="@+id/diaryEntryBody"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="Finally stuck the crimp on Crimp Lord, still failing at the last move ..."
+        android:textSize="16sp"
+        android:maxLines="2"
+        android:ellipsize="end"
+        app:layout_constraintTop_toBottomOf="@id/diaryEntryTops"
+        app:layout_constraintStart_toStartOf="@id/diaryEntryDate"
+        app:layout_constraintEnd_toEndOf="@id/diaryEntryDistance"
+        />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

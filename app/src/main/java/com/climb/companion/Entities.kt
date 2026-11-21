@@ -29,10 +29,10 @@ data class ClimbLogs(
     val title: String?, //new column
     val date: String, //yyyy-mm-dd
     val notes: String?,
-    val tops: Int?,
-    val attempts: Int?,
-    val distance: Double?,
-    val sessionTime: Long?,
+    val tops: Int = 0,
+    val attempts: Int = 0,
+    val distance: Double = 0.0,
+    val sessionTime: Long = 0,
 
     @ColumnInfo(name = "userId")
     val uId: Long,

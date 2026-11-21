@@ -26,7 +26,10 @@ interface AppDao{
     suspend fun updateLog(title: String, notes: String, id: Long)
 
     @Query("SELECT * FROM ClimbLogs WHERE logId = :id")
-    suspend fun getSingleLog(id: Long): List<ClimbLogs>
+    suspend fun getSingleLog(id: Long): ClimbLogs?
+
+    @Query("DELETE FROM ClimbLogs WHERE logId = :id")
+    suspend fun deleteLog(id: Long)
 
     //Sessions
     @Insert
@@ -44,8 +47,6 @@ interface AppDao{
 
     @Update
     suspend fun updateSession(session: Sessions)
-
-
 
     //Attempts
     @Insert
