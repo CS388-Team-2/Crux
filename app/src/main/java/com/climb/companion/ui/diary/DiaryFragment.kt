@@ -13,7 +13,13 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.climb.companion.data.AppDatabase
+import com.climb.companion.data.UserSession
+import com.climb.companion.data.entity.DiaryListItem
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Date
 
 
 class DiaryFragment : Fragment() {
@@ -30,7 +36,7 @@ class DiaryFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val logs = mutableListOf<ClimbLogs>()
+        val logs = mutableListOf<DiaryListItem>()
         val logAdapter = DiaryListAdapter(requireContext(), logs)
         val logRecycler = view.findViewById<RecyclerView>(R.id.diary_recycler_view)
         logRecycler.adapter = logAdapter
@@ -38,16 +44,29 @@ class DiaryFragment : Fragment() {
 
         val userId = UserSession.userId(requireContext())
         val dao = AppDatabase.getInstance(requireContext()).appDao()
-        lifecycleScope.launch {
-            dao.getLogs(userId).collect { databaseList ->
+
+        lifecycleScope.launch{
+            dao.getLogSessionData(userId).collect {databaseList ->
                 logs.clear()
                 logs.addAll(databaseList)
-                logAdapter.notifyDataSetChanged()
-            }
+                logAdapter.notifyDataSetChanged()}
         }
 
         view.findViewById<Button>(R.id.diary_entry_button).setOnClickListener {
-            startActivity(Intent(requireContext(), DiaryEntryActivity::class.java))
+            val todayDate: Date? = Calendar.getInstance().getTime()
+            val formatter = SimpleDateFormat("yyyy-MM-dd")
+            val date = formatter.format(todayDate)
+            lifecycleScope.launch{
+                val exists = dao.checkLogExistence(userId, date)
+                if (exists == null) {
+                    startActivity(Intent(requireContext(), DiaryEntryActivity::class.java))
+                }
+                else{
+                    val intent = Intent(context, DiaryEntryActivity::class.java)
+                    intent.putExtra("logId", exists)
+                    startActivity(intent)
+                }
+            }
         }
 
         val simpleItemTouchCallback = object :

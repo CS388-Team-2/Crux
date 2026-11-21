@@ -20,22 +20,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         />
-<!--
-    <Button
-        android:id="@+id/SaveButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="0dp"
-        android:minHeight="0dp"
-        android:minWidth="0dp"
-        android:text="Save"
-        android:style="?android:attr/borderlessButtonStyle"
-        android:textSize="18sp"
-        android:textColor="#000000"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/BackButton"
-        app:layout_constraintBottom_toBottomOf="@id/BackButton" />
-    -->
+
     <EditText
         android:id="@+id/DiaryTitle"
         android:layout_width="0dp"
@@ -64,6 +49,165 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/DiaryTitle"/>
 
+    <TextView
+        android:id="@+id/SessionLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:text="SESSION"
+        android:textColor="#888888"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/DiaryDate"
+        />
+
+    <!--Time data block-->
+    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/TimeDataBlock"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:background="@drawable/diary_data_box"
+        android:padding="12dp"
+        android:layout_marginStart="16dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/AttemptsDataBlock"
+        app:layout_constraintTop_toBottomOf="@+id/SessionLabel">
+        <TextView
+            android:id="@+id/TotalTimeLable"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Total"
+            android:textSize = "12sp"
+            app:layout_constraintTop_toBottomOf="@+id/TotalTimeValues"
+            app:layout_constraintStart_toStartOf="parent"
+            />
+        <TextView
+            android:id="@+id/TotalTimeValues"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="1:12"
+            android:textSize = "20dp"
+            android:textStyle="bold"
+            android:textColor="#000000"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <!--Attempts data block-->
+    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/AttemptsDataBlock"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:background="@drawable/diary_data_box"
+        android:padding="12dp"
+        android:layout_marginStart="8dp"
+        app:layout_constraintStart_toEndOf="@+id/TimeDataBlock"
+        app:layout_constraintEnd_toStartOf="@id/TopsDataBlock"
+        app:layout_constraintBottom_toBottomOf="@+id/TimeDataBlock"
+        app:layout_constraintTop_toTopOf="@+id/TimeDataBlock">
+        <TextView
+            android:id="@+id/AttemptLable"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Attempts"
+            android:textSize = "12sp"
+            app:layout_constraintTop_toBottomOf="@+id/AttemptValue"
+            app:layout_constraintStart_toStartOf="parent"
+            />
+        <TextView
+            android:id="@+id/AttemptValue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="14"
+            android:textSize = "20dp"
+            android:textStyle="bold"
+            android:textColor="#000000"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <!--Tops block-->
+    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/TopsDataBlock"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:background="@drawable/diary_data_box"
+        android:padding="12dp"
+        android:layout_marginStart="8dp"
+        app:layout_constraintStart_toEndOf="@+id/AttemptsDataBlock"
+        app:layout_constraintEnd_toStartOf="@id/DistanceDataBlock"
+        app:layout_constraintBottom_toBottomOf="@+id/TimeDataBlock"
+        app:layout_constraintTop_toTopOf="@+id/TimeDataBlock">
+        <TextView
+            android:id="@+id/TopsLable"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Tops"
+            android:textSize = "12sp"
+            app:layout_constraintTop_toBottomOf="@+id/TopsValue"
+            app:layout_constraintStart_toStartOf="parent"
+            />
+        <TextView
+            android:id="@+id/TopsValue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="14"
+            android:textSize = "20dp"
+            android:textStyle="bold"
+            android:textColor="#000000"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <!--Distance Data block-->
+    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/DistanceDataBlock"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:background="@drawable/diary_data_box"
+        android:padding="12dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintStart_toEndOf="@+id/TopsDataBlock"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="@+id/TimeDataBlock"
+        app:layout_constraintTop_toTopOf="@+id/TimeDataBlock">
+        <TextView
+            android:id="@+id/DistanceLable"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Climbed"
+            android:textSize = "12sp"
+            app:layout_constraintTop_toBottomOf="@+id/DistanceValue"
+            app:layout_constraintStart_toStartOf="parent"
+            />
+        <TextView
+            android:id="@+id/DistanceValue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="52 m"
+            android:textSize = "20dp"
+            android:textStyle="bold"
+            android:textColor="#000000"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
     <EditText
         android:id="@+id/DiaryBody"
         android:layout_width="0dp"
@@ -76,7 +220,7 @@
         android:background="@null"
         android:scrollbars="vertical"
         android:gravity="top|start"
-        app:layout_constraintTop_toBottomOf="@+id/DiaryDate"
+        app:layout_constraintTop_toBottomOf="@+id/TimeDataBlock"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

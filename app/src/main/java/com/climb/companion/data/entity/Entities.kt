@@ -22,13 +22,14 @@ data class Login(
         childColumns = ["userId"],
         onDelete = ForeignKey.CASCADE
     )],
-    indices = [Index(value = ["userId"])]
+    indices = [Index(value = ["userId", "date"], unique = true)]
 )
 data class ClimbLogs(
     @PrimaryKey(autoGenerate = true) val logId: Long = 0,
     val title: String?, //new column
     val date: String, //yyyy-mm-dd
     val notes: String?,
+    // i think i can delete these
     val tops: Int = 0,
     val attempts: Int = 0,
     val distance: Double = 0.0,
@@ -120,4 +121,22 @@ data class PhotoGallery(
 
     @ColumnInfo(name="lId")
     val logId:  Long
+)
+
+data class DiaryListItem(
+    val logId: Long,
+    val title: String?,
+    val date: String,
+    val notes: String?,
+    val totalTime: Long,
+    val totalDistance: Double,
+    val attemptCount: Int,
+    val topCount: Int
+)
+
+data class DiaryDayLog(
+    val totalTime: Long,
+    val totalDistance: Double,
+    val attemptCount: Int,
+    val topCount: Int
 )

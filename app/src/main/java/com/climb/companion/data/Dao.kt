@@ -6,6 +6,8 @@ import androidx.room.Query
 import androidx.room.Update
 import com.climb.companion.data.entity.Attempts
 import com.climb.companion.data.entity.ClimbLogs
+import com.climb.companion.data.entity.DiaryDayLog
+import com.climb.companion.data.entity.DiaryListItem
 import com.climb.companion.data.entity.Favorites
 import com.climb.companion.data.entity.Login
 import com.climb.companion.data.entity.PhotoGallery
@@ -36,6 +38,39 @@ interface AppDao{
 
     @Query("DELETE FROM ClimbLogs WHERE logId = :id")
     suspend fun deleteLog(id: Long)
+
+    @Query("""SELECT c.logId, c.title, c.date, c.notes, SUM(s.sessionTime) as totalTime, SUM(s.distance) as totalDistance, 
+                    (SELECT Count(*) From Attempts a 
+                    JOIN sessions s2 ON a.sId = s2.sessionId
+                    WHERE s2.userId = c.userId and s2.date = c.date) as attemptCount,
+                    (SELECT Count(*) FROM Attempts a
+                    JOIN sessions s2 ON a.sId = s2.sessionId
+                    WHERE s2.userId = c.userId and s2.date = c.date and a.result = 'Topped')
+                    as topCount
+            FROM ClimbLogs c
+            LEFT JOIN sessions s on c.userId = s.userId and c.date = s.date
+            WHERE c.userId = :id
+            GROUP BY c.logId"""
+    )
+    fun getLogSessionData(id: Long): Flow<List<DiaryListItem>>
+
+    @Query("""SELECT SUM(s.sessionTime) as totalTime, SUM(s.distance) as totalDistance, 
+                    (SELECT Count(*) From Attempts a 
+                    JOIN sessions s2 ON a.sId = s2.sessionId
+                    WHERE s2.userId = c.userId and s2.date = c.date) as attemptCount,
+                    (SELECT Count(*) FROM Attempts a
+                    JOIN sessions s2 ON a.sId = s2.sessionId
+                    WHERE s2.userId = c.userId and s2.date = c.date and a.result = 'Topped')
+                    as topCount
+                    FROM ClimbLogs c
+                    LEFT JOIN sessions s on c.userId = s.userId and c.date = s.date
+                    WHERE c.logId = :id
+                    GROUP BY c.logId""")
+    suspend fun getDailyLogData(id: Long): DiaryDayLog?
+
+    @Query("SELECT logId FROM ClimbLogs WHERE userId = :id and date = :date")
+    suspend fun checkLogExistence(id: Long, date: String): Long?
+
 
     //Sessions
     @Insert

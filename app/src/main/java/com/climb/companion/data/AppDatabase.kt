@@ -13,7 +13,7 @@ import com.climb.companion.data.entity.Sessions
 
 @Database(
     entities = [Login::class, ClimbLogs::class, Favorites::class, PhotoGallery::class, Sessions::class, Attempts::class],
-    version = 4
+    version = 7
 )
 abstract class AppDatabase : RoomDatabase(){
     abstract fun appDao(): AppDao

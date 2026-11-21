@@ -1,14 +1,17 @@
-package com.climb.companion
+package com.climb.companion.ui.diary
 
 import android.content.Context
-import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.climb.companion.R
+import com.climb.companion.data.entity.ClimbLogs
+import android.content.Intent
+import com.climb.companion.data.entity.DiaryListItem
 
-class DiaryListAdapter(private val context: Context, private val logs: List<ClimbLogs>) :  RecyclerView.Adapter<DiaryListAdapter.LogsViewHolder>(){
+class DiaryListAdapter(private val context: Context, private val logs: List<DiaryListItem>) :  RecyclerView.Adapter<DiaryListAdapter.LogsViewHolder>(){
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LogsViewHolder {
         val view = LayoutInflater.from(parent.context)
@@ -30,15 +33,15 @@ class DiaryListAdapter(private val context: Context, private val logs: List<Clim
             dView.setOnClickListener(this)
         }
 
-        fun bind(log: ClimbLogs){
-            val hours = log.sessionTime/3600000
-            val minutes = (log.sessionTime%3600000)/60000
+        fun bind(log: DiaryListItem){
+            val hours = log.totalTime/3600000
+            val minutes = (log.totalTime%3600000)/60000
             dDate.text = log.date
             dTitle.text = log.title
             dTime.text = "${hours}h ${minutes}m"
-            dAttempts.text = "${log.attempts} Attempts"
-            dTops.text = "${log.tops} Tops"
-            dDistance.text = "${log.distance}m Climbed"
+            dAttempts.text = "${log.attemptCount} Attempts"
+            dTops.text = "${log.topCount} Tops"
+            dDistance.text = "${log.totalDistance}m Climbed"
             dBody.text = log.notes
         }
 
@@ -59,4 +62,3 @@ class DiaryListAdapter(private val context: Context, private val logs: List<Clim
         return logs.size
     }
 }
-
