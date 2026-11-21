@@ -80,9 +80,8 @@ data class Attempts(
     val time: String = "",                // shown on the row, e.g. "7:41 PM"
     val isAuto: Boolean = false,          // caught by the sensors instead of logged by hand
     val maxHeight: Double = 0.0,          // meters, from the barometer
-    val fallHeight: Double? = null,       // meters, where the fall happened (null if no fall)
     val durationSeconds: Int = 0,
-    val accelSamples: String? = null,     // g-force readings for the graph, comma separated
+    val path: String? = null,             // points for the x y graph, like "0,0;0.1,0.5" (x meters, height meters)
 )
 
 @Entity(
