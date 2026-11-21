@@ -12,6 +12,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
+import com.google.android.material.button.MaterialButtonToggleGroup
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
@@ -32,7 +33,7 @@ class FeedFragment : Fragment() {
     private var feedAdapter: FeedClimbAdapter? = null
     private var feedList: RecyclerView? = null
     private var feedEmpty: TextView? = null
-    private var gymChip: TextView? = null
+    private var modeToggle: MaterialButtonToggleGroup? = null
     private var outdoorMode = false
     private var outdoorLoading = false
     private var loadGeneration = 0
@@ -61,9 +62,14 @@ class FeedFragment : Fragment() {
             filterLauncher.launch(Intent(requireContext(), FilterActivity::class.java))
         }
 
-        gymChip = view.findViewById(R.id.gym_chip)
-        gymChip?.setOnClickListener {
-            val nextOutdoor = !FeedModeStore.isOutdoor(requireContext())
+        val toggle = view.findViewById<MaterialButtonToggleGroup>(R.id.feed_mode_toggle)
+        modeToggle = toggle
+        val startOutdoor = FeedModeStore.isOutdoor(requireContext())
+        toggle.check(if (startOutdoor) R.id.outdoor_button else R.id.indoor_button)
+        toggle.addOnButtonCheckedListener { _, checkedId, isChecked ->
+            if (!isChecked || checkedId == View.NO_ID) return@addOnButtonCheckedListener
+            val nextOutdoor = checkedId == R.id.outdoor_button
+            if (nextOutdoor == outdoorMode) return@addOnButtonCheckedListener
             FeedModeStore.setOutdoor(requireContext(), nextOutdoor)
             showMode(nextOutdoor)
             if (nextOutdoor) showOutdoor() else loadIndoor()
@@ -80,17 +86,16 @@ class FeedFragment : Fragment() {
             }
         })
 
-        showMode(FeedModeStore.isOutdoor(requireContext()))
+        showMode(startOutdoor)
         if (outdoorMode) showOutdoor() else loadIndoor()
     }
 
     private fun showMode(outdoor: Boolean) {
         outdoorMode = outdoor
-        gymChip?.text = if (outdoor) "Outdoor" else "Indoor"
-        gymChip?.contentDescription = if (outdoor) {
-            "Outdoor climbs. Tap to switch to indoor."
-        } else {
-            "Indoor climbs. Tap to switch to outdoor."
+        val toggle = modeToggle ?: return
+        val checkedId = if (outdoor) R.id.outdoor_button else R.id.indoor_button
+        if (toggle.checkedButtonId != checkedId) {
+            toggle.check(checkedId)
         }
     }
 
