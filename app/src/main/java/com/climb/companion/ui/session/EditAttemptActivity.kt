@@ -31,6 +31,7 @@ class EditAttemptActivity : AppCompatActivity() {
 
     // Edits are kept here and only saved when the user taps Save.
     private var result = "Attempted"
+    private var route: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -63,6 +64,7 @@ class EditAttemptActivity : AppCompatActivity() {
 
     private fun showAttempt() {
         result = attempt.result
+        route = attempt.route
 
         findViewById<TextView>(R.id.edit_title).text = "Attempt ${intent.getIntExtra("attemptNumber", 0)}"
         findViewById<TextView>(R.id.edit_subtitle).text = if (attempt.isAuto) {
@@ -73,9 +75,10 @@ class EditAttemptActivity : AppCompatActivity() {
         findViewById<TextView>(R.id.route_name).text = attempt.route ?: ""
         noteInput.setText(attempt.note)
 
-        // The graph and board only make show when the phone's sensors caught the attempt
+        // The x y graph only shows when the phone's sensors caught the attempt
         val sensorGroup = findViewById<View>(R.id.sensor_group)
         sensorGroup.visibility = if (attempt.isAuto) View.VISIBLE else View.GONE
+        findViewById<PathGraphView>(R.id.path_graph).setPath(attempt.path)
 
         showResult()
 
@@ -91,7 +94,10 @@ class EditAttemptActivity : AppCompatActivity() {
         }
 
         findViewById<View>(R.id.change_route).setOnClickListener {
-            Toast.makeText(this, "Route picker is coming soon", Toast.LENGTH_SHORT).show()
+            SavedClimbPicker.show(this, lifecycleScope) { label ->
+                route = label
+                findViewById<TextView>(R.id.route_name).text = label
+            }
         }
         findViewById<View>(R.id.video_gallery).setOnClickListener {
             Toast.makeText(this, "Gallery picker is coming soon", Toast.LENGTH_SHORT).show()
@@ -106,6 +112,7 @@ class EditAttemptActivity : AppCompatActivity() {
             lifecycleScope.launch {
                 val updated = attempt.copy(
                     result = result,
+                    route = route,
                     note = noteInput.text.toString().trim(),
                 )
                 withContext(Dispatchers.IO) {
