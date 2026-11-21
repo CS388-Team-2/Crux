@@ -18,7 +18,8 @@ class AttemptTracker(
     private val startHeight = 0.5   // meters above the ground that count as climbing
     private val groundHeight = 0.3  // lower than this counts as back on the ground
     private val minHeight = 1.5     // attempts that never get this high are ignored
-    private val fade = .95 // sideways speed shrinks a little each reading so x does not run away
+    private val fadeSeconds = 1.5   // sideways speed fades with this time constant so x does not run away
+    private val noiseLimit = 0.1    // remove x axis sensor noise
 
     private val sensorManager = context.getSystemService(Context.SENSOR_SERVICE) as SensorManager
     private val barometer: Sensor? = sensorManager.getDefaultSensor(Sensor.TYPE_PRESSURE)
@@ -71,7 +72,10 @@ class AttemptTracker(
         lastNanos = event.timestamp
         if (!climbing || seconds > 0.5) return
 
-        speed = (speed + event.values[0] * seconds) * fade
+        // Ignore tiny readings 
+        val accel = if (Math.abs(event.values[0]) < noiseLimit) 0.0 else event.values[0].toDouble()
+
+        speed = (speed + accel * seconds) * Math.exp(-seconds / fadeSeconds)
         x += speed * seconds
     }
 

@@ -7,8 +7,6 @@ import android.graphics.Paint
 import android.graphics.Path
 import android.util.AttributeSet
 import android.view.View
-import kotlin.math.abs
-import kotlin.math.ceil
 import kotlin.math.max
 
 // Draws an x y graph of a climb
@@ -33,11 +31,6 @@ class PathGraphView(context: Context, attrs: AttributeSet?) : View(context, attr
     // Everything is drawn in dp so it looks the same on every phone
     private val dp = resources.displayMetrics.density
 
-    private val grayPaint = Paint().apply {
-        color = Color.parseColor("#BDBDBD")
-        strokeWidth = dp
-        textSize = 10 * dp
-    }
     private val linePaint = Paint().apply {
         color = Color.parseColor("#212121")
         strokeWidth = 3 * dp
@@ -50,42 +43,42 @@ class PathGraphView(context: Context, attrs: AttributeSet?) : View(context, attr
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
 
-        // The area the graph is drawn in, the space around it holds the titles
-        val left = 16 * dp
-        val right = width - 16 * dp
-        val top = 28 * dp
-        val bottom = height - 32 * dp
+        // Only the way up is drawn
+        val topIndex = points.indices.maxByOrNull { points[it].second } ?: return
+        val shown = points.take(topIndex + 1)
+        if (shown.size < 2) return
 
-        // How much to show, at least 4 m up and 1.5 m to each side
-        val maxUp = max(4.0, ceil(points.maxOfOrNull { it.second } ?: 0.0))
-        val maxSide = max(1.5, ceil(points.maxOfOrNull { abs(it.first) } ?: 0.0))
+        // The path fills the pane
+        val inset = 16 * dp
+        val left = inset
+        val right = width - inset
+        val top = inset
+        val bottom = height - inset
+
+        val minX = shown.minOf { it.first }
+        val maxX = shown.maxOf { it.first }
+        val minY = shown.minOf { it.second }
+        val maxY = shown.maxOf { it.second }
+        val rangeX = max(maxX - minX, 0.01)
+        val rangeY = max(maxY - minY, 0.01)
+        val midX = (minX + maxX) / 2
+        val midY = (minY + maxY) / 2
+        val pixelsPerMeter = minOf((right - left) / rangeX, (bottom - top) / rangeY)
 
         // Turn meters into pixels
-        fun pixelX(meters: Double) = (left + (meters + maxSide) / (2 * maxSide) * (right - left)).toFloat()
-        fun pixelY(meters: Double) = (bottom - meters / maxUp * (bottom - top)).toFloat()
-
-        // A grid line for every meter
-        for (h in 0..maxUp.toInt()) {
-            canvas.drawLine(left, pixelY(h.toDouble()), right, pixelY(h.toDouble()), grayPaint)
-        }
-        for (m in -maxSide.toInt()..maxSide.toInt()) {
-            canvas.drawLine(pixelX(m.toDouble()), top, pixelX(m.toDouble()), bottom, grayPaint)
-        }
-        canvas.drawText("height (m)", left, 16 * dp, grayPaint)
-        canvas.drawText("sideways (m)", (left + right) / 2 - 30 * dp, height - 10 * dp, grayPaint)
-
-        if (points.size < 2) return
+        fun pixelX(meters: Double) = ((left + right) / 2 + (meters - midX) * pixelsPerMeter).toFloat()
+        fun pixelY(meters: Double) = ((top + bottom) / 2 - (meters - midY) * pixelsPerMeter).toFloat()
 
         // The path
         val path = Path()
-        points.forEachIndexed { i, p ->
+        shown.forEachIndexed { i, p ->
             if (i == 0) path.moveTo(pixelX(p.first), pixelY(p.second)) else path.lineTo(pixelX(p.first), pixelY(p.second))
         }
         canvas.drawPath(path, linePaint)
 
         // A dot where it started and a dot at the highest point
-        val start = points.first()
-        val highest = points.maxByOrNull { it.second }!!
+        val start = shown.first()
+        val highest = shown.last()
         canvas.drawCircle(pixelX(start.first), pixelY(start.second), 5 * dp, linePaint)
         canvas.drawCircle(pixelX(highest.first), pixelY(highest.second), 5 * dp, linePaint)
     }

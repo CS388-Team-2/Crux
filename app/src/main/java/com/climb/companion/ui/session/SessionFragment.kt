@@ -29,9 +29,9 @@ import java.util.Locale
 
 class SessionFragment : Fragment() {
 
-    // The gym and route are placeholders for now
+    // The gym is a placeholder for now. A session starts with no route until one is picked.
     private val gymName = "Randolf Climbing Center"
-    private val routeName = "Crimp Lord · V5"
+    private val routeName = "No Route Selected"
 
     private lateinit var dao: AppDao
     private lateinit var tracker: AttemptTracker
@@ -100,10 +100,8 @@ class SessionFragment : Fragment() {
         view.findViewById<View>(R.id.log_attempted).setOnClickListener { logAttempt("Attempted") }
         view.findViewById<View>(R.id.log_topped).setOnClickListener { logAttempt("Topped") }
 
-        // route picker is not built yet
-        view.findViewById<View>(R.id.change_route).setOnClickListener {
-            Toast.makeText(requireContext(), "Route picker is coming soon", Toast.LENGTH_SHORT).show()
-        }
+        // Pick which saved climb new attempts are logged to
+        view.findViewById<View>(R.id.change_route).setOnClickListener { chooseRoute() }
 
         showSession()
 
@@ -182,6 +180,19 @@ class SessionFragment : Fragment() {
             intent.putExtra("attemptId", attempt.attemptId)
             intent.putExtra("attemptNumber", number)
             startActivity(intent)
+        }
+    }
+
+    // Switches the running session to a saved climb. Attempts logged after this go to it.
+    private fun chooseRoute() {
+        if (session == null) return
+        SavedClimbPicker.show(requireContext(), viewLifecycleOwner.lifecycleScope) { label ->
+            val current = session ?: return@show
+            viewLifecycleOwner.lifecycleScope.launch {
+                withContext(Dispatchers.IO) {
+                    dao.updateSession(current.copy(route = label))
+                }
+            }
         }
     }
 
