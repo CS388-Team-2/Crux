@@ -54,8 +54,9 @@ replay_pid*
 *.tar.gz
 *.rar
 
-# Full board databases stay outside the repo. The feed uses assets/feed_climbs.json.
+# Raw board downloads stay outside the repo.
 *.db
+!app/src/main/assets/kilter.db
 
 # Other
 .mtj.tmp/

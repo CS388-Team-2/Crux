@@ -11,13 +11,15 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
 import com.climb.companion.R
 import com.climb.companion.data.AppDatabase
-import com.climb.companion.data.CatalogDatabase
+import com.climb.companion.data.KilterCatalog
+import com.climb.companion.data.KilterSort
 import com.climb.companion.data.UserSession
-import com.climb.companion.data.entity.CatalogClimb
 import com.google.android.material.button.MaterialButtonToggleGroup
 import com.google.android.material.slider.RangeSlider
 import com.google.android.material.switchmaterial.SwitchMaterial
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -31,8 +33,8 @@ class FilterActivity : AppCompatActivity() {
     private lateinit var hideSavedSwitch: SwitchMaterial
     private lateinit var showButton: Button
 
-    private var climbs: List<CatalogClimb> = emptyList()
     private var savedIds: Set<String> = emptySet()
+    private var countJob: Job? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -71,12 +73,8 @@ class FilterActivity : AppCompatActivity() {
 
         lifecycleScope.launch {
             val appContext = applicationContext
-            CatalogDatabase.ensureLoaded(appContext)
-            val loaded = withContext(Dispatchers.IO) {
-                CatalogDatabase.getInstance(appContext).catalogDao().getAll()
-            }
             val userId = UserSession.userId(appContext)
-            val saved = if (userId > 0L) {
+            savedIds = if (userId > 0L) {
                 withContext(Dispatchers.IO) {
                     AppDatabase.getInstance(appContext).appDao()
                         .getFavorites(userId)
@@ -87,8 +85,6 @@ class FilterActivity : AppCompatActivity() {
             } else {
                 emptySet()
             }
-            climbs = loaded
-            savedIds = saved
             refreshCount()
         }
     }
@@ -147,15 +143,31 @@ class FilterActivity : AppCompatActivity() {
             values.getOrNull(0)?.toInt() ?: filter.minGrade,
             values.getOrNull(1)?.toInt() ?: filter.maxGrade,
         )
-        if (climbs.isEmpty()) {
-            showButton.text = "Show climbs"
-            return
-        }
-        val count = filter.matching(climbs, savedIds).size
-        showButton.text = when (count) {
-            0 -> "No climbs match"
-            1 -> "Show 1 climb"
-            else -> "Show $count climbs"
+        countJob?.cancel()
+        countJob = lifecycleScope.launch {
+            val count = try {
+                withContext(Dispatchers.IO) {
+                    KilterCatalog.count(
+                        context = applicationContext,
+                        minGrade = filter.minGrade,
+                        maxGrade = filter.maxGrade,
+                        angle = filter.angle,
+                        sort = filter.kilterSort(),
+                        hideSaved = filter.hideSaved,
+                        savedIds = savedIds,
+                    )
+                }
+            } catch (e: CancellationException) {
+                throw e
+            } catch (e: Exception) {
+                if (!isFinishing) showButton.text = "Show climbs"
+                return@launch
+            }
+            showButton.text = when (count) {
+                0 -> "No climbs match"
+                1 -> "Show 1 climb"
+                else -> "Show $count climbs"
+            }
         }
     }
 

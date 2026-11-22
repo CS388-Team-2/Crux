@@ -3,7 +3,9 @@ package com.climb.companion.ui.feed
 import android.content.Intent
 import com.climb.companion.R
 import com.climb.companion.data.AppDatabase
-import com.climb.companion.data.CatalogDatabase
+import com.climb.companion.data.KilterCatalog
+import com.climb.companion.data.KilterClimb
+import com.climb.companion.data.KilterSort
 import com.climb.companion.data.UserSession
 import com.climb.companion.data.entity.Favorites
 import android.os.Bundle
@@ -30,6 +32,11 @@ class FeedFragment : Fragment() {
     private val savesInFlight = mutableSetOf<String>()
     private val savedIds = mutableSetOf<String>()
     private val outdoorCards = mutableListOf<FeedClimb>()
+    private val indoorCards = mutableListOf<FeedClimb>()
+    private var indoorOffset = 0
+    private var indoorHasMore = true
+    private var indoorLoading = false
+    private var indoorFilterKey = ""
     private var feedAdapter: FeedClimbAdapter? = null
     private var feedList: RecyclerView? = null
     private var feedEmpty: TextView? = null
@@ -43,7 +50,7 @@ class FeedFragment : Fragment() {
         ActivityResultContracts.StartActivityForResult()
     ) { result ->
         if (result.resultCode == android.app.Activity.RESULT_OK && !outdoorMode) {
-            loadIndoor()
+            showIndoor()
         }
     }
 
@@ -72,7 +79,7 @@ class FeedFragment : Fragment() {
             if (nextOutdoor == outdoorMode) return@addOnButtonCheckedListener
             FeedModeStore.setOutdoor(requireContext(), nextOutdoor)
             showMode(nextOutdoor)
-            if (nextOutdoor) showOutdoor() else loadIndoor()
+            if (nextOutdoor) showOutdoor() else showIndoor()
         }
 
         feedEmpty = view.findViewById(R.id.feed_empty)
@@ -82,12 +89,12 @@ class FeedFragment : Fragment() {
         PagerSnapHelper().attachToRecyclerView(list)
         list.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                maybeLoadMoreOutdoor()
+                if (outdoorMode) maybeLoadMoreOutdoor() else maybeLoadMoreIndoor()
             }
         })
 
         showMode(startOutdoor)
-        if (outdoorMode) showOutdoor() else loadIndoor()
+        if (outdoorMode) showOutdoor() else showIndoor()
     }
 
     private fun showMode(outdoor: Boolean) {
@@ -109,49 +116,100 @@ class FeedFragment : Fragment() {
         loadOutdoor(reset = true)
     }
 
-    private fun loadIndoor() {
+    private fun showIndoor() {
+        val appContext = requireContext().applicationContext
+        val key = filterKey(appContext)
+        feedEmpty?.visibility = View.GONE
+        if (indoorCards.isNotEmpty() && key == indoorFilterKey) {
+            installIndoorAdapter()
+            feedList?.post { maybeLoadMoreIndoor() }
+            return
+        }
+        indoorFilterKey = key
+        loadIndoor(reset = true)
+    }
+
+    private fun loadIndoor(reset: Boolean) {
+        if (!reset && (indoorLoading || !indoorHasMore)) return
         val list = feedList ?: return
+        if (reset) {
+            indoorCards.clear()
+            indoorOffset = 0
+            indoorHasMore = true
+            feedAdapter = null
+            list.adapter = null
+            feedEmpty?.visibility = View.GONE
+        }
+        indoorLoading = true
         val generation = ++loadGeneration
         outdoorLoading = false
+        val offset = indoorOffset
         viewLifecycleOwner.lifecycleScope.launch {
             val appContext = requireContext().applicationContext
             try {
-                CatalogDatabase.ensureLoaded(appContext)
-                val climbs = withContext(Dispatchers.IO) {
-                    CatalogDatabase.getInstance(appContext).catalogDao().getAll()
-                }
                 val favoriteIds = loadSavedIds(appContext)
-                if (!isAdded || generation != loadGeneration || outdoorMode) return@launch
-                savedIds.clear()
-                savedIds.addAll(favoriteIds)
                 val filter = FeedFilterStore.load(appContext)
-                val visible = filter.matching(climbs, savedIds)
-                val feedClimbs = visible.map { climb ->
-                    FeedClimb(
-                        uuid = climb.uuid,
-                        name = climb.name,
-                        grade = climb.grade,
-                        angle = "${climb.angle}°",
+                val page = withContext(Dispatchers.IO) {
+                    KilterCatalog.page(
+                        context = appContext,
+                        minGrade = filter.minGrade,
+                        maxGrade = filter.maxGrade,
+                        angle = filter.angle,
+                        sort = filter.kilterSort(),
+                        hideSaved = filter.hideSaved,
+                        savedIds = favoriteIds,
+                        offset = offset,
                     )
                 }
-                val adapter = FeedClimbAdapter(
-                    climbs = feedClimbs,
-                    savedUuids = savedIds,
-                    onSaveClick = { climb -> toggleSave(climb) },
-                    onDetailsClick = { climb -> openRoute(climb.name) },
-                )
-                feedAdapter = adapter
-                list.adapter = adapter
+                if (!isAdded || generation != loadGeneration) return@launch
+                savedIds.clear()
+                savedIds.addAll(favoriteIds)
+                val more = page.climbs.map { it.toFeedClimb() }
+                val wasEmpty = indoorCards.isEmpty()
+                indoorCards.addAll(more)
+                indoorOffset += page.climbs.size
+                indoorHasMore = page.hasMore
+                if (outdoorMode) return@launch
+                if (wasEmpty || list.adapter == null) {
+                    installIndoorAdapter()
+                } else {
+                    feedAdapter?.append(more)
+                }
                 feedEmpty?.text = "No climbs match these filters."
-                feedEmpty?.visibility = if (feedClimbs.isEmpty()) View.VISIBLE else View.GONE
+                feedEmpty?.visibility = if (indoorCards.isEmpty()) View.VISIBLE else View.GONE
+                list.post { maybeLoadMoreIndoor() }
             } catch (e: CancellationException) {
                 throw e
             } catch (e: Exception) {
-                if (isAdded && !outdoorMode) {
+                if (isAdded && !outdoorMode && indoorCards.isEmpty()) {
                     Toast.makeText(requireContext(), "Could not load climbs", Toast.LENGTH_SHORT).show()
                 }
+            } finally {
+                if (generation == loadGeneration) indoorLoading = false
             }
         }
+    }
+
+    private fun maybeLoadMoreIndoor() {
+        if (outdoorMode || indoorLoading || !indoorHasMore) return
+        val list = feedList ?: return
+        val layoutManager = list.layoutManager as? LinearLayoutManager ?: return
+        val count = list.adapter?.itemCount ?: 0
+        if (count == 0) return
+        val last = layoutManager.findLastVisibleItemPosition()
+        if (last >= count - 2) loadIndoor(reset = false)
+    }
+
+    private fun installIndoorAdapter() {
+        val list = feedList ?: return
+        val adapter = FeedClimbAdapter(
+            climbs = indoorCards.toList(),
+            savedUuids = savedIds,
+            onSaveClick = { climb -> toggleSave(climb) },
+            onDetailsClick = { climb -> openRoute(climb.name) },
+        )
+        feedAdapter = adapter
+        list.adapter = adapter
     }
 
     private fun loadOutdoor(reset: Boolean) {
@@ -261,7 +319,7 @@ class FeedFragment : Fragment() {
                     return@launch
                 }
                 val dao = AppDatabase.getInstance(appContext).appDao()
-                val angle = if (climb.outdoor) OUTDOOR_ANGLE else FEED_ANGLE
+                val angle = if (climb.outdoor) OUTDOOR_ANGLE else climb.angleDegrees
                 val existing = withContext(Dispatchers.IO) {
                     dao.findFavorite(userId, climb.uuid, angle)
                 }
@@ -281,7 +339,8 @@ class FeedFragment : Fragment() {
                     savedIds.add(climb.uuid)
                     feedAdapter?.setSaved(climb.uuid, true)
                     if (!climb.outdoor && FeedFilterStore.load(appContext).hideSaved) {
-                        loadIndoor()
+                        indoorFilterKey = filterKey(appContext)
+                        loadIndoor(reset = true)
                     }
                 } else {
                     withContext(Dispatchers.IO) {
@@ -310,9 +369,33 @@ class FeedFragment : Fragment() {
     }
 
     companion object {
-        private const val FEED_ANGLE = 40
         private const val OUTDOOR_ANGLE = -1
+
+        private fun filterKey(context: android.content.Context): String {
+            val filter = FeedFilterStore.load(context)
+            return listOf(
+                filter.minGrade,
+                filter.maxGrade,
+                filter.angle,
+                filter.popularity,
+                filter.hideSaved,
+            ).joinToString("|")
+        }
     }
+}
+
+private fun KilterClimb.toFeedClimb(): FeedClimb = FeedClimb(
+    uuid = uuid,
+    name = name,
+    grade = grade,
+    angle = "$angle°",
+    angleDegrees = angle,
+)
+
+internal fun FeedFilter.kilterSort(): KilterSort = when (popularity) {
+    FeedFilter.LEAST_CLIMBED -> KilterSort.LEAST
+    FeedFilter.TOP_CLIMBED -> KilterSort.TOP
+    else -> KilterSort.MOST
 }
 
 private fun OutdoorCard.toFeedClimb(): FeedClimb = FeedClimb(
