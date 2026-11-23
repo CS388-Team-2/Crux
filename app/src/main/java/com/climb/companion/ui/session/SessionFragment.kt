@@ -6,6 +6,7 @@ import com.climb.companion.data.AppDao
 import com.climb.companion.data.AppDatabase
 import com.climb.companion.data.UserSession
 import com.climb.companion.data.entity.Attempts
+import com.climb.companion.data.entity.ClimbLogs
 import com.climb.companion.data.entity.Sessions
 import android.os.Bundle
 import android.os.Handler
@@ -230,11 +231,21 @@ class SessionFragment : Fragment() {
             distance = attempts.sumOf { it.maxHeight },
         )
         lifecycleScope.launch {
+            val today = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(now)
             withContext(Dispatchers.IO) {
                 dao.updateSession(ended)
+                if (dao.checkLogExistence(userId, today) == null) {
+                    dao.insertLog(
+                        ClimbLogs(
+                            title = "Untitled",
+                            date = today,
+                            notes = null,
+                            uId = userId,
+                        )
+                    )
+                }
             }
-            // The Diary Entry screen is not built yet.
-            Toast.makeText(requireContext(), "Diary entry is coming soon", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), "Session saved to today's diary", Toast.LENGTH_SHORT).show()
         }
     }
 

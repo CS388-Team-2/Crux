@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.climb.companion.R
-import com.climb.companion.data.entity.ClimbLogs
 import android.content.Intent
 import com.climb.companion.data.entity.DiaryListItem
 
@@ -34,11 +33,9 @@ class DiaryListAdapter(private val context: Context, private val logs: List<Diar
         }
 
         fun bind(log: DiaryListItem){
-            val hours = log.totalTime/3600000
-            val minutes = (log.totalTime%3600000)/60000
             dDate.text = log.date
             dTitle.text = log.title
-            dTime.text = "${hours}h ${minutes}m"
+            dTime.text = formatShortDuration(log.totalTime)
             dAttempts.text = "${log.attemptCount} Attempts"
             dTops.text = "${log.topCount} Tops"
             dDistance.text = "${log.totalDistance}m Climbed"

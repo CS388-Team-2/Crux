@@ -1,25 +1,27 @@
 package com.climb.companion.ui.diary
 
-import com.climb.companion.ui.common.PlaceholderActivity
-
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
+import com.climb.companion.R
+import com.climb.companion.data.AppDao
 import com.climb.companion.data.AppDatabase
 import com.climb.companion.data.UserSession
 import com.climb.companion.data.entity.ClimbLogs
+import com.climb.companion.data.entity.DiaryDayLog
 import kotlinx.coroutines.launch
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
-import com.climb.companion.R
-import com.climb.companion.data.entity.DiaryDayLog
+import java.util.Locale
 
-class DiaryEntryActivity : PlaceholderActivity() {
-    override val screenTitle = "Diary entry"
+class DiaryEntryActivity : AppCompatActivity() {
+
     private lateinit var dTitle: EditText
     private lateinit var dDate: TextView
     private lateinit var dBody: EditText
@@ -31,7 +33,13 @@ class DiaryEntryActivity : PlaceholderActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.diary_edit)
+
         val userId = UserSession.userId(this)
+        if (userId < 0) {
+            Toast.makeText(this, "Sign in to use the diary", Toast.LENGTH_SHORT).show()
+            finish()
+            return
+        }
 
         dTitle = findViewById(R.id.DiaryTitle)
         dDate = findViewById(R.id.DiaryDate)
@@ -41,91 +49,79 @@ class DiaryEntryActivity : PlaceholderActivity() {
         dTops = findViewById(R.id.TopsValue)
         dDistance = findViewById(R.id.DistanceValue)
 
-        val dBack = findViewById<Button>(R.id.BackButton)
+        val saveButton = findViewById<Button>(R.id.BackButton)
+        saveButton.text = "Save"
+
         val dao = AppDatabase.getInstance(this).appDao()
         val logId = intent.getLongExtra("logId", -1L)
+
         if (logId != -1L) {
             lifecycleScope.launch {
-                //fix to get DiaryItem dataclass
-                val log = dao.getSingleLog(logId)
-                if (log != null) {
-                    val formattedString = getDate(log.date)
-                    dTitle.setText(log.title, TextView.BufferType.EDITABLE)
-                    dDate.text = formattedString
-                    dBody.setText(log.notes, TextView.BufferType.EDITABLE)
-                    val dayData: DiaryDayLog? = dao.getDailyLogData(logId)
-                    var hours = 0L
-                    var minutes = 0L
-                    var attempts = 0
-                    var tops = 0
-                    var distance = "0 m"
-                    if (dayData != null){
-                        hours = dayData.totalTime/3600000
-                        minutes = (dayData.totalTime%3600000)/60000
-                        attempts = dayData.attemptCount
-                        tops = dayData.topCount
-                        distance = "${dayData.totalDistance} m"
-                    }
-
-                    val minutesString = minutes.toString().padStart(2, '0');
-                    dTime.text = "${hours}:${minutesString}"
-                    dAttempts.text = attempts.toString()
-                    dTops.text = tops.toString()
-                    dDistance.text = distance
-                }
-
+                val log = dao.getSingleLog(logId) ?: return@launch
+                dTitle.setText(log.title.orEmpty(), TextView.BufferType.EDITABLE)
+                dDate.text = getDate(log.date)
+                dBody.setText(log.notes.orEmpty(), TextView.BufferType.EDITABLE)
+                bindDayStats(dao.getDailyLogData(logId) ?: dao.getDailyStatsForDate(userId, log.date))
             }
-            dBack.setOnClickListener{
-                var title = dTitle.text.toString()
-                val notes = dBody.text.toString()
-                if (title.isEmpty()) {title="Untitled"}
-                    lifecycleScope.launch {
-                        dao.updateLog(title, notes, logId)
-                        finish()
-                    }
-
+            saveButton.setOnClickListener { saveExisting(dao, logId) }
+        } else {
+            val todayString = todayYmd()
+            dDate.text = getDate(todayString)
+            lifecycleScope.launch {
+                bindDayStats(dao.getDailyStatsForDate(userId, todayString))
             }
-        }
-        else{
-            val todayDate: Date? = Calendar.getInstance().getTime()
-            val formatter = SimpleDateFormat("yyyy-MM-dd")
-            val todayString = formatter.format(todayDate)
-            val displayDate = getDate(todayString)
-
-            dDate.text = displayDate
-            dAttempts.text = "0"
-            dTime.text = "0:00"
-            dDistance.text = "0 m"
-            dTops.text = "0"
-            dBack.setOnClickListener {
-                var title = dTitle.text.toString()
-                val date = todayString
-                val notes = dBody.text.toString()
-                val uId = userId
-                if (!title.isEmpty()) {
-                    lifecycleScope.launch {
-                        dao.insertLog(
-                            ClimbLogs(
-                                title = title,
-                                date = date,
-                                notes = notes,
-                                uId = uId
-                            )
-                        )
-                        finish()
-                    }
-                }else{finish()}
-            }
+            saveButton.setOnClickListener { saveNew(dao, userId, todayString) }
         }
     }
 
-    fun getDate(input: String): String{
-        val inputFormat: DateFormat = SimpleDateFormat("yyyy-MM-dd")
-        val outputFormat: DateFormat = SimpleDateFormat("EEE, MMM dd")
-        val startDateStr = input
-        val date = inputFormat.parse(startDateStr)
-        val startDateStrNewFormat: String = outputFormat.format(date)
-        return startDateStrNewFormat
+    private fun bindDayStats(dayData: DiaryDayLog?) {
+        val timeSeconds = dayData?.totalTime ?: 0L
+        dTime.text = formatClockDuration(timeSeconds)
+        dAttempts.text = (dayData?.attemptCount ?: 0).toString()
+        dTops.text = (dayData?.topCount ?: 0).toString()
+        val distance = dayData?.totalDistance ?: 0.0
+        dDistance.text = "$distance m"
     }
 
+    private fun saveExisting(dao: AppDao, logId: Long) {
+        var title = dTitle.text.toString().trim()
+        if (title.isEmpty()) title = "Untitled"
+        val notes = dBody.text.toString()
+        lifecycleScope.launch {
+            dao.updateLog(title, notes, logId)
+            finish()
+        }
+    }
+
+    private fun saveNew(dao: AppDao, userId: Long, date: String) {
+        var title = dTitle.text.toString().trim()
+        if (title.isEmpty()) title = "Untitled"
+        val notes = dBody.text.toString()
+        lifecycleScope.launch {
+            val existing = dao.checkLogExistence(userId, date)
+            if (existing != null) {
+                dao.updateLog(title, notes, existing)
+            } else {
+                dao.insertLog(
+                    ClimbLogs(
+                        title = title,
+                        date = date,
+                        notes = notes,
+                        uId = userId,
+                    )
+                )
+            }
+            finish()
+        }
+    }
+
+    private fun todayYmd(): String =
+        SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Calendar.getInstance().time)
+
+    private fun getDate(input: String): String {
+        val inputFormat: DateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+        val outputFormat: DateFormat = SimpleDateFormat("EEE, MMM dd", Locale.getDefault())
+        val date = inputFormat.parse(input) ?: return input
+        return outputFormat.format(date)
+    }
 }

@@ -83,6 +83,19 @@ interface AppDao{
     @Query("SELECT logId FROM ClimbLogs WHERE userId = :id and date = :date")
     suspend fun checkLogExistence(id: Long, date: String): Long?
 
+    @Query(
+        """SELECT COALESCE(SUM(s.sessionTime), 0) as totalTime, COALESCE(SUM(s.distance), 0) as totalDistance,
+            (SELECT Count(*) From Attempts a
+            JOIN Sessions s2 ON a.sId = s2.sessionId
+            WHERE s2.userId = :userId and s2.date = :date) as attemptCount,
+            (SELECT Count(*) FROM Attempts a
+            JOIN Sessions s2 ON a.sId = s2.sessionId
+            WHERE s2.userId = :userId and s2.date = :date and a.result = 'Topped')
+            as topCount
+            FROM Sessions s
+            WHERE s.userId = :userId and s.date = :date"""
+    )
+    suspend fun getDailyStatsForDate(userId: Long, date: String): DiaryDayLog?
 
     //Sessions
     @Insert
