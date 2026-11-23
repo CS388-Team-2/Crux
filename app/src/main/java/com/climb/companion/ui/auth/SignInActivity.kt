@@ -3,7 +3,9 @@ package com.climb.companion.ui.auth
 import android.content.Intent
 import com.climb.companion.R
 import com.climb.companion.data.AppDatabase
+import com.climb.companion.data.PermissionChoices
 import com.climb.companion.data.UserSession
+import com.climb.companion.MainActivity
 import com.climb.companion.ui.permissions.PermissionsActivity
 import android.os.Bundle
 import android.widget.Button
@@ -52,15 +54,19 @@ class SignInActivity : AppCompatActivity() {
                 if (matches == null) {
                     Toast.makeText(this@SignInActivity, "Invalid username or password", Toast.LENGTH_SHORT).show()
                 } else {
-                    openPermissions(matches.uId, matches.Username)
+                    UserSession.save(this@SignInActivity, matches.uId, matches.Username)
+                    openNext(matches.uId, matches.Username)
                 }
             }
         }
     }
 
-    private fun openPermissions(userId: Long, username: String) {
-        UserSession.save(this, userId, username)
-        val intent = Intent(this, PermissionsActivity::class.java)
+    private fun openNext(userId: Long, username: String) {
+        val intent = if (PermissionChoices.hasChoice(this)) {
+            Intent(this, MainActivity::class.java)
+        } else {
+            Intent(this, PermissionsActivity::class.java)
+        }
         intent.putExtra("username", username)
         intent.putExtra("userId", userId)
         startActivity(intent)

@@ -12,6 +12,8 @@ data class Login(
     @PrimaryKey(autoGenerate = true) val uId: Long = 0,
     val Username: String,
     val Password: String,
+    @ColumnInfo(defaultValue = "") val FirstName: String = "",
+    @ColumnInfo(defaultValue = "") val LastName: String = "",
 )
 
 @Entity(tableName = "ClimbLogs",
@@ -100,6 +102,9 @@ data class Favorites(
     val boardID: String,
     val angle: Int?,
     val Attempted: Boolean = false,
+    val climbName: String? = null,
+    val grade: String? = null,
+    val photoUrl: String? = null,
 
     @ColumnInfo(name = "userId")
     val uId: Long,

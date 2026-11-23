@@ -4,7 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import com.climb.companion.R
 import com.climb.companion.data.AppDatabase
-import com.climb.companion.data.CatalogDatabase
+import com.climb.companion.data.KilterCatalog
 import com.climb.companion.data.UserSession
 import com.climb.companion.ui.feed.RouteDetailActivity
 import android.view.LayoutInflater
@@ -45,19 +45,34 @@ class SavedFragment : Fragment() {
                 if (userId <= 0L) {
                     emptyList()
                 } else {
-                    CatalogDatabase.ensureLoaded(appContext)
                     withContext(Dispatchers.IO) {
                         val favorites = AppDatabase.getInstance(appContext).appDao()
                             .getFavorites(userId)
                             .first()
                             .sortedByDescending { it.favoriteId }
-                        val catalog = CatalogDatabase.getInstance(appContext)
-                            .catalogDao()
-                            .getAll()
-                            .associateBy { it.uuid }
                         favorites.mapNotNull { favorite ->
-                            val climb = catalog[favorite.boardID] ?: return@mapNotNull null
-                            SavedClimbRow(name = climb.name, grade = climb.grade)
+                            val angle = favorite.angle
+                            val climb = if (angle != null && angle >= 0) {
+                                KilterCatalog.find(appContext, favorite.boardID, angle)
+                            } else {
+                                null
+                            }
+                            if (climb != null) {
+                                SavedClimbRow(
+                                    name = climb.name,
+                                    grade = climb.grade,
+                                    uuid = climb.uuid,
+                                    angle = climb.angle,
+                                )
+                            } else {
+                                val name = favorite.climbName?.takeIf { it.isNotBlank() }
+                                    ?: return@mapNotNull null
+                                SavedClimbRow(
+                                    name = name,
+                                    grade = favorite.grade?.takeIf { it.isNotBlank() } ?: "Ungraded",
+                                    outdoor = true,
+                                )
+                            }
                         }
                     }
                 }
@@ -72,8 +87,11 @@ class SavedFragment : Fragment() {
             if (!isAdded) return@launch
             empty.visibility = if (rows.isEmpty()) View.VISIBLE else View.GONE
             list.adapter = SavedClimbAdapter(rows) { row ->
+                if (row.outdoor) return@SavedClimbAdapter
                 startActivity(
                     Intent(requireContext(), RouteDetailActivity::class.java)
+                        .putExtra(RouteDetailActivity.EXTRA_UUID, row.uuid)
+                        .putExtra(RouteDetailActivity.EXTRA_ANGLE, row.angle)
                         .putExtra(RouteDetailActivity.EXTRA_TITLE, row.name)
                 )
             }

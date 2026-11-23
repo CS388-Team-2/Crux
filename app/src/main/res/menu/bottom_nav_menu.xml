@@ -2,18 +2,22 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/nav_feed"
-        android:icon="@android:drawable/ic_menu_view"
+        android:icon="@drawable/ic_nav_home_selector"
         android:title="Feed" />
     <item
         android:id="@+id/nav_saved"
-        android:icon="@android:drawable/ic_menu_save"
+        android:icon="@drawable/ic_nav_bookmark_selector"
         android:title="Saved" />
     <item
         android:id="@+id/nav_session"
-        android:icon="@android:drawable/ic_media_play"
+        android:icon="@drawable/ic_nav_session_selector"
         android:title="Session" />
     <item
         android:id="@+id/nav_diary"
-        android:icon="@android:drawable/ic_menu_agenda"
+        android:icon="@drawable/ic_nav_diary_selector"
         android:title="Diary" />
+    <item
+        android:id="@+id/nav_profile"
+        android:icon="@drawable/ic_nav_profile"
+        android:title="Profile" />
 </menu>
