@@ -1,7 +1,7 @@
 package com.climb.companion.ui.feed
 
 import android.os.Bundle
-import android.widget.Button
+import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
@@ -39,7 +39,7 @@ class RouteDetailActivity : AppCompatActivity() {
 
         val title = intent.getStringExtra(EXTRA_TITLE).orEmpty()
         findViewById<TextView>(R.id.title_text).text = title
-        findViewById<Button>(R.id.back_button).setOnClickListener { finish() }
+        findViewById<ImageButton>(R.id.back_button).setOnClickListener { finish() }
         findViewById<MaterialButton>(R.id.save_button).setOnClickListener { toggleSave() }
 
         val uuid = intent.getStringExtra(EXTRA_UUID)

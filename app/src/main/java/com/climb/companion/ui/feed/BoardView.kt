@@ -100,10 +100,10 @@ class BoardView @JvmOverloads constructor(
         val gap = typicalGap()
         val dotRadius = gap * scale * 0.22f
         val holdRadius = gap * scale * 0.42f
-        strokePaint.strokeWidth = holdRadius * 0.16f
-        startPaint.strokeWidth = holdRadius * 0.16f
-        finishPaint.strokeWidth = holdRadius * 0.16f
-        dashPaint.strokeWidth = holdRadius * 0.16f
+        strokePaint.strokeWidth = holdRadius * 0.30f
+        startPaint.strokeWidth = holdRadius * 0.30f
+        finishPaint.strokeWidth = holdRadius * 0.30f
+        dashPaint.strokeWidth = holdRadius * 0.28f
 
         for (hole in holes) {
             canvas.drawCircle(mapX(hole.x, pad, extraX, scale), mapY(hole.y, pad, extraY, scale), dotRadius, dotPaint)
