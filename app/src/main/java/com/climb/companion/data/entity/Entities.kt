@@ -28,12 +28,14 @@ data class Login(
 )
 data class ClimbLogs(
     @PrimaryKey(autoGenerate = true) val logId: Long = 0,
+    val title: String?, //new column
     val date: String, //yyyy-mm-dd
     val notes: String?,
-    val tops: Int?,
-    val attempts: Int?,
-    val distance: Double?,
-    val sessionTime: Long?,
+    // i think i can delete these
+    val tops: Int = 0,
+    val attempts: Int = 0,
+    val distance: Double = 0.0,
+    val sessionTime: Long = 0,
 
     @ColumnInfo(name = "userId")
     val uId: Long,
@@ -124,4 +126,22 @@ data class PhotoGallery(
 
     @ColumnInfo(name="lId")
     val logId:  Long
+)
+
+data class DiaryListItem(
+    val logId: Long,
+    val title: String?,
+    val date: String,
+    val notes: String?,
+    val totalTime: Long,
+    val totalDistance: Double,
+    val attemptCount: Int,
+    val topCount: Int
+)
+
+data class DiaryDayLog(
+    val totalTime: Long,
+    val totalDistance: Double,
+    val attemptCount: Int,
+    val topCount: Int
 )

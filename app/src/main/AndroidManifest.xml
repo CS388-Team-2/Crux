@@ -52,7 +52,10 @@
             android:name=".ui.session.EditAttemptActivity"
             android:exported="false"
             android:windowSoftInputMode="adjustResize" />
-        <activity android:name=".ui.diary.DiaryEntryActivity" android:exported="false" />
+        <activity
+            android:name=".ui.diary.DiaryEntryActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
     </application>
 
 </manifest>
