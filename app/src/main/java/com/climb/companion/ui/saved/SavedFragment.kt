@@ -58,7 +58,12 @@ class SavedFragment : Fragment() {
                                 null
                             }
                             if (climb != null) {
-                                SavedClimbRow(name = climb.name, grade = climb.grade)
+                                SavedClimbRow(
+                                    name = climb.name,
+                                    grade = climb.grade,
+                                    uuid = climb.uuid,
+                                    angle = climb.angle,
+                                )
                             } else {
                                 val name = favorite.climbName?.takeIf { it.isNotBlank() }
                                     ?: return@mapNotNull null
@@ -85,6 +90,8 @@ class SavedFragment : Fragment() {
                 if (row.outdoor) return@SavedClimbAdapter
                 startActivity(
                     Intent(requireContext(), RouteDetailActivity::class.java)
+                        .putExtra(RouteDetailActivity.EXTRA_UUID, row.uuid)
+                        .putExtra(RouteDetailActivity.EXTRA_ANGLE, row.angle)
                         .putExtra(RouteDetailActivity.EXTRA_TITLE, row.name)
                 )
             }

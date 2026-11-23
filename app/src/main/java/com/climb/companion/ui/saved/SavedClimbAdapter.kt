@@ -10,6 +10,8 @@ import androidx.recyclerview.widget.RecyclerView
 data class SavedClimbRow(
     val name: String,
     val grade: String,
+    val uuid: String = "",
+    val angle: Int = 0,
     val outdoor: Boolean = false,
 )
 

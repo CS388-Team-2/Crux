@@ -211,7 +211,7 @@ class FeedFragment : Fragment() {
             climbs = indoorCards.toList(),
             savedUuids = savedIds,
             onSaveClick = { climb -> toggleSave(climb) },
-            onDetailsClick = { climb -> openRoute(climb.name) },
+            onDetailsClick = { climb -> openRoute(climb) },
             board = indoorBoard,
         )
         feedAdapter = adapter
@@ -296,7 +296,7 @@ class FeedFragment : Fragment() {
             climbs = outdoorCards.toList(),
             savedUuids = savedIds,
             onSaveClick = { climb -> toggleSave(climb) },
-            onDetailsClick = { climb -> openRoute(climb.name) },
+            onDetailsClick = { climb -> openRoute(climb) },
         )
         feedAdapter = adapter
         list.adapter = adapter
@@ -367,10 +367,13 @@ class FeedFragment : Fragment() {
         }
     }
 
-    private fun openRoute(name: String) {
+    private fun openRoute(climb: FeedClimb) {
+        if (climb.outdoor) return
         startActivity(
             Intent(requireContext(), RouteDetailActivity::class.java)
-                .putExtra(RouteDetailActivity.EXTRA_TITLE, name)
+                .putExtra(RouteDetailActivity.EXTRA_UUID, climb.uuid)
+                .putExtra(RouteDetailActivity.EXTRA_ANGLE, climb.angleDegrees)
+                .putExtra(RouteDetailActivity.EXTRA_TITLE, climb.name)
         )
     }
 
