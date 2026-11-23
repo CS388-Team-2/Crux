@@ -32,15 +32,15 @@ Checked stories are ones a climber can do in the app today. The feed screen is s
 - [x] As a climber, I want a welcome screen that explains the app, so that I can get started.
 - [x] As a climber, I want to allow or skip location, camera, motion, and notifications, so that I can continue to the feed.
 - [ ] As a climber, I want to scroll a feed of Kilter board setups, so that I can open one and see how the board is set.
-- [ ] As a climber, I want a logbook of my climbing days, so that I can review what I attempted.
+- [x] As a climber, I want a logbook of my climbing days, so that I can review what I attempted.
 - [ ] As a climber, I want to add photos to a logbook entry, so that I can remember the climb.
 - [ ] As a climber, I want the phone to track the distance I climbed during a session, so that I can see how far I got.
-- [ ] As a climber, I want to favorite Kilter board setups, so that I can find them again later.
-- [ ] As a climber, I want to create an account with a username and password, so that I can keep my logs and favorites on this phone.
-- [ ] As a climber, I want to sign in to an account I already have, so that I can get back to my climbs.
+- [x] As a climber, I want to favorite Kilter board setups, so that I can find them again later.
+- [x] As a climber, I want to create an account with a username and password, so that I can keep my logs and favorites on this phone.
+- [x] As a climber, I want to sign in to an account I already have, so that I can get back to my climbs.
 - [ ] As a climber, I want to change my account settings and permissions, so that I can control what the app is allowed to use.
-- [ ] As a climber, I want to filter the feed by board, angle, and grade, so that I can see climbs that fit the session.
-- [ ] As a climber, I want to log attempts, tops, time, and notes for a session, so that I can save that day to the diary.
+- [x] As a climber, I want to filter the feed by board, angle, and grade, so that I can see climbs that fit the session.
+- [x] As a climber, I want to log attempts, tops, time, and notes for a session, so that I can save that day to the diary.
 - [ ] As a climber, I want to edit or delete an attempt, so that I can correct a session before I save it.
 
 **Optional**
