@@ -2,8 +2,8 @@ package com.climb.companion.ui.feed
 
 import android.content.Context
 import android.graphics.Canvas
-import android.graphics.DashPathEffect
 import android.graphics.Paint
+import android.graphics.RectF
 import android.util.AttributeSet
 import android.view.View
 import com.climb.companion.data.BoardLayout
@@ -41,26 +41,30 @@ class BoardView @JvmOverloads constructor(
         style = Paint.Style.STROKE
     }
 
-    init {
-        // Dashed circles are not drawn by the hardware renderer on older phones.
-        setLayerType(LAYER_TYPE_SOFTWARE, null)
-    }
-
     fun show(layout: BoardLayout, frames: String) {
+        val marks = parseKilterFrames(frames)
+        val setId = marks
+            .mapNotNull { layout.placements[it.placementId]?.setId }
+            .groupingBy { it }
+            .eachCount()
+            .maxByOrNull { it.value }
+            ?.key
+            ?: BoardLayout.BOLT_SET
         holes.clear()
-        holes.addAll(layout.holes)
+        holes.addAll(layout.grid(setId))
         holds.clear()
-        for (mark in parseKilterFrames(frames)) {
-            val point = layout.placements[mark.placementId] ?: continue
+        for (mark in marks) {
+            val placement = layout.placements[mark.placementId] ?: continue
             val role = holdRole(mark.roleId, layout.roles) ?: continue
-            holds += point to role
+            holds += placement.point to role
         }
-        val xs = holes.map { it.x }
-        val ys = holes.map { it.y }
-        minX = xs.minOrNull() ?: 0
-        maxX = xs.maxOrNull() ?: 1
-        minY = ys.minOrNull() ?: 0
-        maxY = ys.maxOrNull() ?: 1
+        val points = holes + holds.map { it.first }
+        val xs = points.map { it.x }
+        val ys = points.map { it.y }
+        minX = xs.minOrNull() ?: BoardLayout.GRID_LEFT
+        maxX = xs.maxOrNull() ?: BoardLayout.GRID_RIGHT
+        minY = ys.minOrNull() ?: BoardLayout.GRID_BOTTOM
+        maxY = ys.maxOrNull() ?: BoardLayout.GRID_TOP
         if (minX == maxX) maxX = minX + 1
         if (minY == maxY) maxY = minY + 1
         contentDescription = "Hold layout"
@@ -83,14 +87,10 @@ class BoardView @JvmOverloads constructor(
         val extraX = (width - pad * 2 - spanX * scale) / 2f
         val extraY = (height - pad * 2 - spanY * scale) / 2f
         val gap = typicalGap()
-        val dotRadius = (gap * scale * 0.16f).coerceAtLeast(2f)
-        val holdRadius = (gap * scale * 0.42f).coerceAtLeast(dotRadius * 2.2f)
-        strokePaint.strokeWidth = holdRadius * 0.16f
-        dashPaint.strokeWidth = holdRadius * 0.14f
-        dashPaint.pathEffect = DashPathEffect(
-            floatArrayOf(holdRadius * 0.55f, holdRadius * 0.4f),
-            0f,
-        )
+        val dotRadius = gap * scale * 0.22f
+        val holdRadius = gap * scale * 0.58f
+        strokePaint.strokeWidth = holdRadius * 0.18f
+        dashPaint.strokeWidth = holdRadius * 0.16f
 
         for (hole in holes) {
             canvas.drawCircle(mapX(hole.x, pad, extraX, scale), mapY(hole.y, pad, extraY, scale), dotRadius, dotPaint)
@@ -104,9 +104,18 @@ class BoardView @JvmOverloads constructor(
                     canvas.drawCircle(cx, cy, holdRadius, strokePaint)
                     canvas.drawCircle(cx, cy, holdRadius * 0.45f, strokePaint)
                 }
-                "foot" -> canvas.drawCircle(cx, cy, holdRadius, dashPaint)
+                "foot" -> drawDashedCircle(canvas, cx, cy, holdRadius)
                 "finish" -> canvas.drawCircle(cx, cy, holdRadius, fillPaint)
             }
+        }
+    }
+
+    private fun drawDashedCircle(canvas: Canvas, cx: Float, cy: Float, radius: Float) {
+        val oval = RectF(cx - radius, cy - radius, cx + radius, cy + radius)
+        var start = 0f
+        while (start < 360f) {
+            canvas.drawArc(oval, start, 18f, false, dashPaint)
+            start += 32f
         }
     }
 

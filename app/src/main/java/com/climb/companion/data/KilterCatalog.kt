@@ -15,7 +15,7 @@ object KilterCatalog {
     private const val FILE_NAME = "kilter.db"
     private const val PREFS = "kilter_catalog"
     private const val KEY_VERSION = "version"
-    private const val VERSION = 1
+    private const val VERSION = 2
     private const val CLIMB_COLUMNS =
         "uuid, name, grade, angle, setter, layout_name, logged_count, quality, " +
             "IFNULL((SELECT frames FROM climb_frames WHERE uuid = climbs.uuid), '')"
@@ -123,17 +123,20 @@ object KilterCatalog {
         synchronized(gate) {
             boardLayout?.let { return it }
             val database = open(context)
-            val placements = HashMap<Int, BoardPoint>()
+            val placements = HashMap<Int, BoardPlacement>()
             database.rawQuery(
                 """
-                SELECT p.id, h.x, h.y
+                SELECT p.id, h.x, h.y, p.set_id
                 FROM placements p
                 JOIN holes h ON h.id = p.hole_id
                 """.trimIndent(),
                 null,
             ).use { cursor ->
                 while (cursor.moveToNext()) {
-                    placements[cursor.getInt(0)] = BoardPoint(cursor.getInt(1), cursor.getInt(2))
+                    placements[cursor.getInt(0)] = BoardPlacement(
+                        point = BoardPoint(cursor.getInt(1), cursor.getInt(2)),
+                        setId = cursor.getInt(3),
+                    )
                 }
             }
             val roles = HashMap<Int, String>()
@@ -143,7 +146,6 @@ object KilterCatalog {
                 }
             }
             val layout = BoardLayout(
-                holes = placements.values.distinctBy { it.x to it.y },
                 placements = placements,
                 roles = roles,
             )

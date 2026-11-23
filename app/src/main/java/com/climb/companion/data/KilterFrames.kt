@@ -10,11 +10,32 @@ data class BoardPoint(
     val y: Int,
 )
 
-data class BoardLayout(
-    val holes: List<BoardPoint>,
-    val placements: Map<Int, BoardPoint>,
-    val roles: Map<Int, String>,
+data class BoardPlacement(
+    val point: BoardPoint,
+    val setId: Int,
 )
+
+data class BoardLayout(
+    val placements: Map<Int, BoardPlacement>,
+    val roles: Map<Int, String>,
+) {
+    fun grid(setId: Int): List<BoardPoint> {
+        return placements.values
+            .asSequence()
+            .filter { it.setId == setId && it.point.x in GRID_LEFT..GRID_RIGHT && it.point.y in GRID_BOTTOM..GRID_TOP }
+            .map { it.point }
+            .distinctBy { it.x to it.y }
+            .toList()
+    }
+
+    companion object {
+        const val GRID_LEFT = 0
+        const val GRID_RIGHT = 144
+        const val GRID_BOTTOM = 12
+        const val GRID_TOP = 156
+        const val BOLT_SET = 1
+    }
+}
 
 private val FRAME_PATTERN = Regex("p(\\d+)r(\\d+)")
 
