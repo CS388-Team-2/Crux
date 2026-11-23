@@ -3,8 +3,10 @@ package com.climb.companion.ui.auth
 import android.content.Intent
 import com.climb.companion.R
 import com.climb.companion.data.AppDatabase
+import com.climb.companion.data.PermissionChoices
 import com.climb.companion.data.UserSession
 import com.climb.companion.data.entity.Login
+import com.climb.companion.MainActivity
 import com.climb.companion.ui.permissions.PermissionsActivity
 import android.os.Bundle
 import android.widget.Button
@@ -30,17 +32,25 @@ class CreateAccountActivity : AppCompatActivity() {
             insets
         }
 
+        val firstNameInput = findViewById<EditText>(R.id.first_name_input)
+        val lastNameInput = findViewById<EditText>(R.id.last_name_input)
         val usernameInput = findViewById<EditText>(R.id.username_input)
         val passwordInput = findViewById<EditText>(R.id.password_input)
         val createButton = findViewById<Button>(R.id.create_button)
         val dao = AppDatabase.getInstance(this).appDao()
 
         createButton.setOnClickListener {
+            val firstName = firstNameInput.text.toString().trim()
+            val lastName = lastNameInput.text.toString().trim()
             val username = usernameInput.text.toString().trim()
-            val password = passwordInput.text.toString()
+            val password = passwordInput.text.toString().trim()
 
-            if (username.isEmpty() || password.isEmpty()) {
-                Toast.makeText(this, "Please enter a username and password", Toast.LENGTH_SHORT).show()
+            if (firstName.isEmpty() || lastName.isEmpty() || username.isEmpty() || password.isEmpty()) {
+                Toast.makeText(
+                    this,
+                    "Please enter a first name, last name, username, and password",
+                    Toast.LENGTH_SHORT,
+                ).show()
                 return@setOnClickListener
             }
 
@@ -50,7 +60,14 @@ class CreateAccountActivity : AppCompatActivity() {
                     if (dao.getLogin(username).isNotEmpty()) {
                         return@withContext 0L
                     }
-                    dao.insertLogin(Login(Username = username, Password = password))
+                    dao.insertLogin(
+                        Login(
+                            Username = username,
+                            Password = password,
+                            FirstName = firstName,
+                            LastName = lastName,
+                        ),
+                    )
                     dao.getLogin(username).firstOrNull()?.uId ?: -1L
                 }
                 createButton.isEnabled = true
@@ -69,15 +86,21 @@ class CreateAccountActivity : AppCompatActivity() {
                             Toast.LENGTH_SHORT,
                         ).show()
                     }
-                    else -> openPermissions(newUserId, username)
+                    else -> {
+                        UserSession.save(this@CreateAccountActivity, newUserId, username)
+                        openNext(newUserId, username)
+                    }
                 }
             }
         }
     }
 
-    private fun openPermissions(userId: Long, username: String) {
-        UserSession.save(this, userId, username)
-        val intent = Intent(this, PermissionsActivity::class.java)
+    private fun openNext(userId: Long, username: String) {
+        val intent = if (PermissionChoices.hasChoice(this)) {
+            Intent(this, MainActivity::class.java)
+        } else {
+            Intent(this, PermissionsActivity::class.java)
+        }
         intent.putExtra("username", username)
         intent.putExtra("userId", userId)
         startActivity(intent)

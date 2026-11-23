@@ -3,7 +3,7 @@ package com.climb.companion.ui.session
 import android.content.Context
 import android.widget.Toast
 import com.climb.companion.data.AppDatabase
-import com.climb.companion.data.CatalogDatabase
+import com.climb.companion.data.KilterCatalog
 import com.climb.companion.data.UserSession
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.CoroutineScope
@@ -39,20 +39,23 @@ object SavedClimbPicker {
 
     // The user's saved climbs, newest first
     private suspend fun loadLabels(appContext: Context): List<String> {
-        CatalogDatabase.ensureLoaded(appContext)
         return withContext(Dispatchers.IO) {
             val userId = UserSession.userId(appContext)
             val favorites = AppDatabase.getInstance(appContext).appDao()
                 .getFavorites(userId)
                 .first()
                 .sortedByDescending { it.favoriteId }
-            val catalog = CatalogDatabase.getInstance(appContext)
-                .catalogDao()
-                .getAll()
-                .associateBy { it.uuid }
             favorites.mapNotNull { favorite ->
-                val climb = catalog[favorite.boardID] ?: return@mapNotNull null
-                "${climb.name} · ${climb.grade}"
+                val angle = favorite.angle
+                val climb = if (angle != null && angle >= 0) {
+                    KilterCatalog.find(appContext, favorite.boardID, angle)
+                } else {
+                    null
+                }
+                val name = climb?.name ?: favorite.climbName?.takeIf { it.isNotBlank() }
+                    ?: return@mapNotNull null
+                val grade = climb?.grade ?: favorite.grade?.takeIf { it.isNotBlank() } ?: "Ungraded"
+                "$name · $grade"
             }
         }
     }

@@ -4,17 +4,23 @@ import android.view.LayoutInflater
 import com.climb.companion.R
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import coil.dispose
+import coil.load
+import com.climb.companion.data.BoardLayout
 import com.google.android.material.button.MaterialButton
 
 class FeedClimbAdapter(
-    private val climbs: List<FeedClimb>,
+    climbs: List<FeedClimb>,
     savedUuids: Set<String>,
     private val onSaveClick: (FeedClimb) -> Unit,
     private val onDetailsClick: (FeedClimb) -> Unit,
+    private val board: BoardLayout? = null,
 ) : RecyclerView.Adapter<FeedClimbAdapter.ClimbViewHolder>() {
 
+    private val climbs = climbs.toMutableList()
     private val savedUuids = savedUuids.toMutableSet()
 
     fun setSaved(uuid: String, saved: Boolean) {
@@ -24,10 +30,20 @@ class FeedClimbAdapter(
         if (index >= 0) notifyItemChanged(index)
     }
 
+    fun append(more: List<FeedClimb>) {
+        if (more.isEmpty()) return
+        val start = climbs.size
+        climbs.addAll(more)
+        notifyItemRangeInserted(start, more.size)
+    }
+
     class ClimbViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val photo: ImageView = itemView.findViewById(R.id.climb_photo)
+        val boardView: BoardView = itemView.findViewById(R.id.board_view)
         val nameText: TextView = itemView.findViewById(R.id.climb_name_text)
         val gradeText: TextView = itemView.findViewById(R.id.grade_text)
         val angleText: TextView = itemView.findViewById(R.id.angle_text)
+        val areaText: TextView = itemView.findViewById(R.id.area_text)
         val saveButton: MaterialButton = itemView.findViewById(R.id.save_button)
         val detailsButton: MaterialButton = itemView.findViewById(R.id.details_button)
     }
@@ -46,10 +62,37 @@ class FeedClimbAdapter(
         val climb = climbs[position]
         holder.nameText.text = climb.name
         holder.gradeText.text = climb.grade
-        holder.angleText.text = climb.angle
         holder.saveButton.text = if (climb.uuid in savedUuids) "Saved" else "Save"
         holder.saveButton.setOnClickListener { onSaveClick(climb) }
-        holder.detailsButton.setOnClickListener { onDetailsClick(climb) }
+        if (climb.outdoor) {
+            holder.boardView.visibility = View.GONE
+            holder.boardView.clear()
+            holder.photo.visibility = View.VISIBLE
+            holder.angleText.visibility = View.GONE
+            holder.detailsButton.visibility = View.GONE
+            holder.areaText.visibility = if (climb.areaName.isBlank()) View.GONE else View.VISIBLE
+            holder.areaText.text = climb.areaName
+            holder.photo.contentDescription = climb.name
+            holder.photo.scaleType = ImageView.ScaleType.CENTER_CROP
+            // Coil applies EXIF orientation, so sideways phone photos show upright.
+            holder.photo.load(climb.photoUrl) {
+                crossfade(true)
+                placeholder(R.drawable.bg_feed_hold)
+                error(R.drawable.bg_feed_hold)
+            }
+        } else {
+            holder.photo.dispose()
+            holder.photo.setImageDrawable(null)
+            holder.photo.visibility = View.GONE
+            holder.boardView.visibility = View.VISIBLE
+            val layout = board
+            if (layout == null) holder.boardView.clear() else holder.boardView.show(layout, climb.frames)
+            holder.angleText.visibility = View.VISIBLE
+            holder.angleText.text = climb.angle
+            holder.detailsButton.visibility = View.VISIBLE
+            holder.detailsButton.setOnClickListener { onDetailsClick(climb) }
+            holder.areaText.visibility = View.GONE
+        }
     }
 
     override fun getItemCount(): Int = climbs.size

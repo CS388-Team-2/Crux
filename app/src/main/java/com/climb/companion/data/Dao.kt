@@ -23,6 +23,18 @@ interface AppDao{
     @Query("SELECT * FROM Login WHERE Username = :username")
     suspend fun getLogin(username: String): List<Login>
 
+    @Query("SELECT * FROM Login WHERE uId = :id LIMIT 1")
+    suspend fun getLoginById(id: Long): Login?
+
+    @Query("UPDATE Login SET FirstName = :firstName, LastName = :lastName WHERE uId = :id")
+    suspend fun updateNames(id: Long, firstName: String, lastName: String)
+
+    @Query("UPDATE Login SET Password = :password WHERE uId = :id")
+    suspend fun updatePassword(id: Long, password: String)
+
+    @Query("DELETE FROM Login WHERE uId = :id")
+    suspend fun deleteLogin(id: Long)
+
     //Climb logs
     @Insert
     suspend fun insertLog(log: ClimbLogs)

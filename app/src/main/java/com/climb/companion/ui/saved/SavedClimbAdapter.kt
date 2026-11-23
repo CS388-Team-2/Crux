@@ -10,6 +10,9 @@ import androidx.recyclerview.widget.RecyclerView
 data class SavedClimbRow(
     val name: String,
     val grade: String,
+    val uuid: String = "",
+    val angle: Int = 0,
+    val outdoor: Boolean = false,
 )
 
 class SavedClimbAdapter(
@@ -32,7 +35,13 @@ class SavedClimbAdapter(
         val climb = climbs[position]
         holder.nameText.text = climb.name
         holder.gradeText.text = climb.grade
-        holder.itemView.setOnClickListener { onClick(climb) }
+        if (climb.outdoor) {
+            holder.itemView.setOnClickListener(null)
+            holder.itemView.isClickable = false
+        } else {
+            holder.itemView.isClickable = true
+            holder.itemView.setOnClickListener { onClick(climb) }
+        }
     }
 
     override fun getItemCount(): Int = climbs.size
