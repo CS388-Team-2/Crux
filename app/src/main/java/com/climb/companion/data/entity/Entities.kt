@@ -12,6 +12,8 @@ data class Login(
     @PrimaryKey(autoGenerate = true) val uId: Long = 0,
     val Username: String,
     val Password: String,
+    @ColumnInfo(defaultValue = "") val FirstName: String = "",
+    @ColumnInfo(defaultValue = "") val LastName: String = "",
 )
 
 @Entity(tableName = "ClimbLogs",

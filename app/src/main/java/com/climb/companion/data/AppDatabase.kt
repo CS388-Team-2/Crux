@@ -15,7 +15,7 @@ import com.climb.companion.data.entity.Sessions
 
 @Database(
     entities = [Login::class, ClimbLogs::class, Favorites::class, PhotoGallery::class, Sessions::class, Attempts::class],
-    version = 4
+    version = 5
 )
 abstract class AppDatabase : RoomDatabase(){
     abstract fun appDao(): AppDao
@@ -35,7 +35,7 @@ abstract class AppDatabase : RoomDatabase(){
                 context.applicationContext,
                 AppDatabase::class.java, "app-db"
             )
-                .addMigrations(MIGRATION_3_4)
+                .addMigrations(MIGRATION_3_4, MIGRATION_4_5)
                 .fallbackToDestructiveMigration()
                 .build()
 
@@ -75,6 +75,13 @@ abstract class AppDatabase : RoomDatabase(){
                 )
                 db.execSQL("DROP TABLE Attempts")
                 db.execSQL("ALTER TABLE Attempts_new RENAME TO Attempts")
+            }
+        }
+
+        private val MIGRATION_4_5 = object : Migration(4, 5) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL("ALTER TABLE Login ADD COLUMN FirstName TEXT NOT NULL DEFAULT ''")
+                db.execSQL("ALTER TABLE Login ADD COLUMN LastName TEXT NOT NULL DEFAULT ''")
             }
         }
     }
