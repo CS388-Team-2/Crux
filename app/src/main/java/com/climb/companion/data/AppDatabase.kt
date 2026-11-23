@@ -36,7 +36,7 @@ abstract class AppDatabase : RoomDatabase(){
                 AppDatabase::class.java, "app-db"
             )
                 .addMigrations(MIGRATION_3_4, MIGRATION_4_5, MIGRATION_5_7)
-                .fallbackToDestructiveMigrationFrom(1, 2, 3, 4)
+                .fallbackToDestructiveMigrationFrom(1, 2)
                 .build()
 
         private val MIGRATION_3_4 = object : Migration(3, 4) {
@@ -88,6 +88,7 @@ abstract class AppDatabase : RoomDatabase(){
         // Version 5 ClimbLogs has no title, and tops/attempts/distance/sessionTime allow null.
         // SQLite cannot change those in place, and PhotoGallery references ClimbLogs, so both
         // tables are rebuilt. A database already on version 5 uses this path instead of a wipe.
+        // Versions 3 and 4 already have migrations, so they cannot also be destructive fallbacks.
         private val MIGRATION_5_7 = object : Migration(5, 7) {
             override fun migrate(db: SupportSQLiteDatabase) {
                 db.execSQL(
