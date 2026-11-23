@@ -8,6 +8,7 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
 import com.climb.companion.ui.diary.DiaryFragment
 import com.climb.companion.ui.feed.FeedFragment
+import com.climb.companion.ui.profile.ProfileFragment
 import com.climb.companion.ui.saved.SavedFragment
 import com.climb.companion.ui.session.SessionFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -33,6 +34,7 @@ class MainActivity : AppCompatActivity() {
                 R.id.nav_saved -> SavedFragment()
                 R.id.nav_session -> SessionFragment()
                 R.id.nav_diary -> DiaryFragment()
+                R.id.nav_profile -> ProfileFragment()
                 else -> FeedFragment()
             }
             showFragment(fragment)

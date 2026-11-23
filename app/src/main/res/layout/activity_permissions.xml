@@ -25,24 +25,64 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
         android:text="Location"
+        android:textColor="@color/crux_ink"
         android:textSize="16sp"
         android:textStyle="bold" />
 
     <TextView
+        android:id="@+id/location_status"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
+        android:textColor="@color/crux_muted"
+        android:textSize="14sp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Camera"
+        android:textColor="@color/crux_ink"
+        android:textSize="16sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/camera_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/crux_muted"
+        android:textSize="14sp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
         android:text="Motion &amp; barometer"
+        android:textColor="@color/crux_ink"
         android:textSize="16sp"
         android:textStyle="bold" />
 
     <TextView
+        android:id="@+id/motion_status"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
+        android:textColor="@color/crux_muted"
+        android:textSize="14sp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
         android:text="Notifications"
+        android:textColor="@color/crux_ink"
         android:textSize="16sp"
         android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/notification_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/crux_muted"
+        android:textSize="14sp" />
 
     <Button
         android:id="@+id/continue_button"
@@ -56,5 +96,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Not now" />
+
+    <Button
+        android:id="@+id/settings_button"
+        style="@style/Widget.Material3.Button.TextButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Phone settings"
+        android:visibility="gone" />
 
 </LinearLayout>
