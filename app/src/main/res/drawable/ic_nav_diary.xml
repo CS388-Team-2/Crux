@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <path
+        android:fillColor="@android:color/transparent"
+        android:pathData="M7.09,2.21 H16.91 A1.35,1.35 0 0 1 18.26,3.56 V18.5 A1.35,1.35 0 0 1 16.91,19.85 H12.78 M9.99,19.85 H7.09 A1.35,1.35 0 0 1 5.74,18.5 V3.56 A1.35,1.35 0 0 1 7.09,2.21"
+        android:strokeColor="@color/crux_muted"
+        android:strokeLineJoin="round"
+        android:strokeWidth="1.2" />
+    <path
+        android:fillColor="@android:color/transparent"
+        android:pathData="M8.66,2.21 V16.28"
+        android:strokeColor="@color/crux_muted"
+        android:strokeLineCap="butt"
+        android:strokeWidth="1.2" />
+    <path
+        android:fillColor="@android:color/transparent"
+        android:pathData="M5.74,15.23 A1.05,1.05 0 0 0 6.79,16.28 H18.26"
+        android:strokeColor="@color/crux_muted"
+        android:strokeLineJoin="round"
+        android:strokeWidth="1.2" />
+    <path
+        android:fillColor="@android:color/transparent"
+        android:pathData="M8.25,18.16 H18.26"
+        android:strokeColor="@color/crux_muted"
+        android:strokeLineCap="round"
+        android:strokeWidth="1.2" />
+    <path
+        android:fillColor="@android:color/transparent"
+        android:pathData="M10.89,6.31 H15.88 V9.86 H10.89 Z"
+        android:strokeColor="@color/crux_muted"
+        android:strokeLineJoin="round"
+        android:strokeWidth="1.2" />
+    <path
+        android:fillColor="@android:color/transparent"
+        android:pathData="M9.99,18.63 L9.99,21.89 L11.39,20.55 L12.78,21.89 L12.78,18.63"
+        android:strokeColor="@color/crux_muted"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:strokeWidth="1.2" />
+</vector>

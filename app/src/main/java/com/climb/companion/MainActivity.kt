@@ -29,7 +29,9 @@ class MainActivity : AppCompatActivity() {
             showFragment(FeedFragment())
         }
 
-        findViewById<BottomNavigationView>(R.id.bottom_nav).setOnItemSelectedListener { item ->
+        val bottomNav = findViewById<BottomNavigationView>(R.id.bottom_nav)
+        bottomNav.itemActiveIndicatorColor = getColorStateList(R.color.crux_border)
+        bottomNav.setOnItemSelectedListener { item ->
             val fragment = when (item.itemId) {
                 R.id.nav_saved -> SavedFragment()
                 R.id.nav_session -> SessionFragment()
