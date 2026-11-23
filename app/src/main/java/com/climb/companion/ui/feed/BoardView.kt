@@ -33,9 +33,13 @@ class BoardView @JvmOverloads constructor(
         color = 0xFF212121.toInt()
         style = Paint.Style.STROKE
     }
-    private val fillPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        color = 0xFF424242.toInt()
-        style = Paint.Style.FILL
+    private val startPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+        color = 0xFF1B7F3A.toInt()
+        style = Paint.Style.STROKE
+    }
+    private val finishPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+        color = 0xFFC62828.toInt()
+        style = Paint.Style.STROKE
     }
     private val dashPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         color = 0xFF212121.toInt()
@@ -95,8 +99,10 @@ class BoardView @JvmOverloads constructor(
         val extraY = (height - pad * 2 - spanY * scale) / 2f
         val gap = typicalGap()
         val dotRadius = gap * scale * 0.22f
-        val holdRadius = gap * scale * 0.58f
-        strokePaint.strokeWidth = holdRadius * 0.18f
+        val holdRadius = gap * scale * 0.42f
+        strokePaint.strokeWidth = holdRadius * 0.16f
+        startPaint.strokeWidth = holdRadius * 0.16f
+        finishPaint.strokeWidth = holdRadius * 0.16f
         dashPaint.strokeWidth = holdRadius * 0.16f
 
         for (hole in holes) {
@@ -106,13 +112,10 @@ class BoardView @JvmOverloads constructor(
             val cx = mapX(point.x, pad, extraX, scale)
             val cy = mapY(point.y, pad, extraY, scale)
             when (role) {
-                "start" -> canvas.drawCircle(cx, cy, holdRadius, strokePaint)
-                "hand" -> {
-                    canvas.drawCircle(cx, cy, holdRadius, strokePaint)
-                    canvas.drawCircle(cx, cy, holdRadius * 0.45f, strokePaint)
-                }
+                "start" -> canvas.drawCircle(cx, cy, holdRadius, startPaint)
+                "hand" -> canvas.drawCircle(cx, cy, holdRadius, strokePaint)
                 "foot" -> drawDashedCircle(canvas, cx, cy, holdRadius)
-                "finish" -> canvas.drawCircle(cx, cy, holdRadius, fillPaint)
+                "finish" -> canvas.drawCircle(cx, cy, holdRadius, finishPaint)
             }
         }
     }

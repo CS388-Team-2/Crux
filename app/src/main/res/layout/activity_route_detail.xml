@@ -57,33 +57,65 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="○ Start"
-            android:textColor="@color/crux_ink"
-            android:textSize="13sp" />
+            android:text="○"
+            android:textColor="#1B7F3A"
+            android:textSize="22sp" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="12dp"
-            android:text="◎ Hand"
+            android:layout_marginStart="4dp"
+            android:text="Start"
             android:textColor="@color/crux_ink"
-            android:textSize="13sp" />
+            android:textSize="16sp" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="12dp"
-            android:text="◌ Foot"
+            android:layout_marginStart="16dp"
+            android:text="○"
             android:textColor="@color/crux_ink"
-            android:textSize="13sp" />
+            android:textSize="22sp" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="12dp"
-            android:text="● Finish"
+            android:layout_marginStart="4dp"
+            android:text="Hand"
             android:textColor="@color/crux_ink"
-            android:textSize="13sp" />
+            android:textSize="16sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:text="◌"
+            android:textColor="@color/crux_ink"
+            android:textSize="22sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:text="Foot"
+            android:textColor="@color/crux_ink"
+            android:textSize="16sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:text="○"
+            android:textColor="#C62828"
+            android:textSize="22sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:text="Finish"
+            android:textColor="@color/crux_ink"
+            android:textSize="16sp" />
     </LinearLayout>
 
     <LinearLayout
