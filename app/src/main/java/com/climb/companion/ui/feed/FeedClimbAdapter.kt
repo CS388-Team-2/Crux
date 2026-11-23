@@ -9,6 +9,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import coil.dispose
 import coil.load
+import com.climb.companion.data.BoardLayout
 import com.google.android.material.button.MaterialButton
 
 class FeedClimbAdapter(
@@ -16,6 +17,7 @@ class FeedClimbAdapter(
     savedUuids: Set<String>,
     private val onSaveClick: (FeedClimb) -> Unit,
     private val onDetailsClick: (FeedClimb) -> Unit,
+    private val board: BoardLayout? = null,
 ) : RecyclerView.Adapter<FeedClimbAdapter.ClimbViewHolder>() {
 
     private val climbs = climbs.toMutableList()
@@ -37,6 +39,7 @@ class FeedClimbAdapter(
 
     class ClimbViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val photo: ImageView = itemView.findViewById(R.id.climb_photo)
+        val boardView: BoardView = itemView.findViewById(R.id.board_view)
         val nameText: TextView = itemView.findViewById(R.id.climb_name_text)
         val gradeText: TextView = itemView.findViewById(R.id.grade_text)
         val angleText: TextView = itemView.findViewById(R.id.angle_text)
@@ -62,6 +65,9 @@ class FeedClimbAdapter(
         holder.saveButton.text = if (climb.uuid in savedUuids) "Saved" else "Save"
         holder.saveButton.setOnClickListener { onSaveClick(climb) }
         if (climb.outdoor) {
+            holder.boardView.visibility = View.GONE
+            holder.boardView.clear()
+            holder.photo.visibility = View.VISIBLE
             holder.angleText.visibility = View.GONE
             holder.detailsButton.visibility = View.GONE
             holder.areaText.visibility = if (climb.areaName.isBlank()) View.GONE else View.VISIBLE
@@ -75,15 +81,17 @@ class FeedClimbAdapter(
                 error(R.drawable.bg_feed_hold)
             }
         } else {
+            holder.photo.dispose()
+            holder.photo.setImageDrawable(null)
+            holder.photo.visibility = View.GONE
+            holder.boardView.visibility = View.VISIBLE
+            val layout = board
+            if (layout == null) holder.boardView.clear() else holder.boardView.show(layout, climb.frames)
             holder.angleText.visibility = View.VISIBLE
             holder.angleText.text = climb.angle
             holder.detailsButton.visibility = View.VISIBLE
             holder.detailsButton.setOnClickListener { onDetailsClick(climb) }
             holder.areaText.visibility = View.GONE
-            holder.photo.dispose()
-            holder.photo.setImageDrawable(null)
-            holder.photo.setBackgroundResource(R.drawable.bg_feed_hold)
-            holder.photo.contentDescription = "Hold layout"
         }
     }
 

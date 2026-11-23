@@ -8,5 +8,6 @@ data class FeedClimb(
     val areaName: String = "",
     val photoUrl: String = "",
     val angleDegrees: Int = 40,
+    val frames: String = "",
     val outdoor: Boolean = false,
 )

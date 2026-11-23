@@ -16,6 +16,9 @@ object KilterCatalog {
     private const val PREFS = "kilter_catalog"
     private const val KEY_VERSION = "version"
     private const val VERSION = 1
+    private const val CLIMB_COLUMNS =
+        "uuid, name, grade, angle, setter, layout_name, logged_count, quality, " +
+            "IFNULL((SELECT frames FROM climb_frames WHERE uuid = climbs.uuid), '')"
     private const val PAGE_SIZE = 30
     private const val SAVED_ID_LIMIT = 900
 
@@ -28,6 +31,9 @@ object KilterCatalog {
 
     @Volatile
     private var database: SQLiteDatabase? = null
+
+    @Volatile
+    private var boardLayout: BoardLayout? = null
 
     private val gate = Any()
 
@@ -54,7 +60,7 @@ object KilterCatalog {
         val climbs = query(
             context,
             """
-            SELECT uuid, name, grade, angle, setter, layout_name, logged_count, quality
+            SELECT $CLIMB_COLUMNS
             FROM climbs
             WHERE $where
             ORDER BY $order
@@ -91,7 +97,7 @@ object KilterCatalog {
         val matches = query(
             context,
             """
-            SELECT uuid, name, grade, angle, setter, layout_name, logged_count, quality
+            SELECT $CLIMB_COLUMNS
             FROM climbs
             WHERE uuid = ? AND angle = ?
             LIMIT 1
@@ -102,7 +108,7 @@ object KilterCatalog {
         return query(
             context,
             """
-            SELECT uuid, name, grade, angle, setter, layout_name, logged_count, quality
+            SELECT $CLIMB_COLUMNS
             FROM climbs
             WHERE uuid = ?
             ORDER BY logged_count DESC
@@ -110,6 +116,40 @@ object KilterCatalog {
             """.trimIndent(),
             arrayOf(uuid),
         ).firstOrNull()
+    }
+
+    fun board(context: Context): BoardLayout {
+        boardLayout?.let { return it }
+        synchronized(gate) {
+            boardLayout?.let { return it }
+            val database = open(context)
+            val placements = HashMap<Int, BoardPoint>()
+            database.rawQuery(
+                """
+                SELECT p.id, h.x, h.y
+                FROM placements p
+                JOIN holes h ON h.id = p.hole_id
+                """.trimIndent(),
+                null,
+            ).use { cursor ->
+                while (cursor.moveToNext()) {
+                    placements[cursor.getInt(0)] = BoardPoint(cursor.getInt(1), cursor.getInt(2))
+                }
+            }
+            val roles = HashMap<Int, String>()
+            database.rawQuery("SELECT id, name FROM roles", null).use { cursor ->
+                while (cursor.moveToNext()) {
+                    roles[cursor.getInt(0)] = cursor.getString(1)
+                }
+            }
+            val layout = BoardLayout(
+                holes = placements.values.distinctBy { it.x to it.y },
+                placements = placements,
+                roles = roles,
+            )
+            boardLayout = layout
+            return layout
+        }
     }
 
     private fun selection(
@@ -148,6 +188,7 @@ object KilterCatalog {
                     layoutName = cursor.getString(5),
                     loggedCount = cursor.getInt(6),
                     quality = cursor.getDouble(7),
+                    frames = cursor.getString(8) ?: "",
                 )
             }
             return climbs

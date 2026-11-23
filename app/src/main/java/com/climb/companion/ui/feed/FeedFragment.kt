@@ -37,6 +37,7 @@ class FeedFragment : Fragment() {
     private var indoorHasMore = true
     private var indoorLoading = false
     private var indoorFilterKey = ""
+    private var indoorBoard: com.climb.companion.data.BoardLayout? = null
     private var feedAdapter: FeedClimbAdapter? = null
     private var feedList: RecyclerView? = null
     private var feedEmpty: TextView? = null
@@ -149,8 +150,9 @@ class FeedFragment : Fragment() {
             try {
                 val favoriteIds = loadSavedIds(appContext)
                 val filter = FeedFilterStore.load(appContext)
-                val page = withContext(Dispatchers.IO) {
-                    KilterCatalog.page(
+                val loaded = withContext(Dispatchers.IO) {
+                    val board = indoorBoard ?: KilterCatalog.board(appContext)
+                    val page = KilterCatalog.page(
                         context = appContext,
                         minGrade = filter.minGrade,
                         maxGrade = filter.maxGrade,
@@ -160,8 +162,11 @@ class FeedFragment : Fragment() {
                         savedIds = favoriteIds,
                         offset = offset,
                     )
+                    board to page
                 }
                 if (!isAdded || generation != loadGeneration) return@launch
+                indoorBoard = loaded.first
+                val page = loaded.second
                 savedIds.clear()
                 savedIds.addAll(favoriteIds)
                 val more = page.climbs.map { it.toFeedClimb() }
@@ -207,6 +212,7 @@ class FeedFragment : Fragment() {
             savedUuids = savedIds,
             onSaveClick = { climb -> toggleSave(climb) },
             onDetailsClick = { climb -> openRoute(climb.name) },
+            board = indoorBoard,
         )
         feedAdapter = adapter
         list.adapter = adapter
@@ -390,6 +396,7 @@ private fun KilterClimb.toFeedClimb(): FeedClimb = FeedClimb(
     grade = grade,
     angle = "$angle°",
     angleDegrees = angle,
+    frames = frames,
 )
 
 internal fun FeedFilter.kilterSort(): KilterSort = when (popularity) {

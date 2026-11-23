@@ -6,14 +6,27 @@
     android:paddingHorizontal="16dp"
     android:paddingBottom="16dp">
 
-    <ImageView
-        android:id="@+id/climb_photo"
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
         android:background="@drawable/bg_feed_hold"
-        android:contentDescription="Hold layout"
-        android:scaleType="centerCrop" />
+        android:clipToOutline="true">
+
+        <ImageView
+            android:id="@+id/climb_photo"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:contentDescription="Climb photo"
+            android:scaleType="centerCrop" />
+
+        <com.climb.companion.ui.feed.BoardView
+            android:id="@+id/board_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:contentDescription="Hold layout"
+            android:visibility="gone" />
+    </FrameLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
