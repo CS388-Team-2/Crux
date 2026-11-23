@@ -9,6 +9,7 @@ import android.view.View
 import com.climb.companion.data.BoardLayout
 import com.climb.companion.data.BoardPoint
 import com.climb.companion.data.holdRole
+import com.climb.companion.data.nearestBoardHole
 import com.climb.companion.data.parseKilterFrames
 import kotlin.math.min
 
@@ -56,7 +57,13 @@ class BoardView @JvmOverloads constructor(
         for (mark in marks) {
             val placement = layout.placements[mark.placementId] ?: continue
             val role = holdRole(mark.roleId, layout.roles) ?: continue
-            holds += placement.point to role
+            // Foot holds are often stored on the screw-on set, four units from the bolt-on hole.
+            val point = if (placement.setId == setId) {
+                placement.point
+            } else {
+                nearestBoardHole(placement.point, holes) ?: placement.point
+            }
+            holds += point to role
         }
         val points = holes + holds.map { it.first }
         val xs = points.map { it.x }

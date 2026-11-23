@@ -34,6 +34,13 @@ class KilterFramesTest {
     }
 
     @Test
+    fun screwOnFootSnapsOntoTheBoltHole() {
+        val grid = listOf(BoardPoint(48, 16), BoardPoint(80, 16))
+
+        assertEquals(BoardPoint(48, 16), nearestBoardHole(BoardPoint(52, 20), grid))
+    }
+
+    @Test
     fun blankFramesHaveNoHolds() {
         assertEquals(emptyList<FrameHold>(), parseKilterFrames(""))
     }

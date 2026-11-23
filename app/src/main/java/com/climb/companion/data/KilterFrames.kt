@@ -31,7 +31,7 @@ data class BoardLayout(
     companion object {
         const val GRID_LEFT = 0
         const val GRID_RIGHT = 144
-        const val GRID_BOTTOM = 12
+        const val GRID_BOTTOM = 0
         const val GRID_TOP = 156
         const val BOLT_SET = 1
     }
@@ -47,6 +47,21 @@ fun parseKilterFrames(frames: String): List<FrameHold> =
         )
     }.toList()
 
+fun nearestBoardHole(point: BoardPoint, grid: List<BoardPoint>, maxDistance: Int = 12): BoardPoint? {
+    var best: BoardPoint? = null
+    var bestDistance = Int.MAX_VALUE
+    val limit = maxDistance * maxDistance
+    for (hole in grid) {
+        val dx = hole.x - point.x
+        val dy = hole.y - point.y
+        val distance = dx * dx + dy * dy
+        if (distance < bestDistance) {
+            bestDistance = distance
+            best = hole
+        }
+    }
+    return if (bestDistance <= limit) best else null
+}
 fun holdRole(roleId: Int, roleNames: Map<Int, String>): String? =
     when (roleNames[roleId]) {
         "start" -> "start"
