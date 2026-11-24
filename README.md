@@ -280,11 +280,26 @@ The Kilter feed, logbook, photos, sensor distance, and favorites stories are sti
 ## Completed user stories
 
 - List the completed user stories from this unit
+1. Updated Login/Registration System and homepage
+2. Feed
+3. Session with sensors
+4. Diary
+5. User Page
+6. Permissions
 - List any pending user stories / any user stories you decided to cut
 from the original requirements
 
-[Add video/gif of your current application that shows build progress]
-<img src="YOUR_WIREFRAME_IMAGE_URL" width=600>
+Login System:
+
+Feed:
+
+Saved:
+
+Session:
+
+Diary:
+
+Profile:
 
 ## App Demo Video
 
