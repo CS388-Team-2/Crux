@@ -31,9 +31,9 @@ Checked stories are ones a climber can do in the app today. The feed screen is s
 
 - [x] As a climber, I want a welcome screen that explains the app, so that I can get started.
 - [x] As a climber, I want to allow or skip location, camera, motion, and notifications, so that I can continue to the feed.
-- [ ] As a climber, I want to scroll a feed of Kilter board setups, so that I can open one and see how the board is set.
-- [x] As a climber, I want a logbook of my climbing days, so that I can review what I attempted.
-- [ ] As a climber, I want to add photos to a logbook entry, so that I can remember the climb.
+- [x] As a climber, I want to scroll a feed of Kilter board setups, so that I can open one and see how the board is set.
+- [x] As a climber, I want a diary of my climbing days, so that I can review what I attempted.
+- [ ] As a climber, I want to add photos to a dairy entry, so that I can remember the climb.
 - [x] As a climber, I want the phone to track the distance I climbed during a session, so that I can see how far I got.
 - [x] As a climber, I want to favorite Kilter board setups, so that I can find them again later.
 - [x] As a climber, I want to create an account with a username and password, so that I can keep my logs and favorites on this phone.
@@ -48,6 +48,7 @@ Checked stories are ones a climber can do in the app today. The feed screen is s
 - [ ] As a climber, I want to find gyms near my current location, so that I can switch the feed to the gym I am at.
 - [x] As a climber, I want to find outdoor climbing problems, so that I can discover climbs outside the gym.
 - [ ] As a climber, I want to attach a video to a logbook entry, so that I can review the beta later.
+- [x] As a climber, I want to see a my charted climbing path taken during an attempt.
 
 ### 2. Screen Archetypes
 
@@ -275,17 +276,32 @@ The Kilter feed, logbook, photos, sensor distance, and favorites stories are sti
 
 ## GitHub Project board
 
-[Add screenshot of your Project Board with the updated status of issues for Milestone 3. Note that these should include the updated issues you worked on for this sprint and not be a duplicate of Milestone 2 Project board.] <img src="YOUR_WIREFRAME_IMAGE_URL" width=600>
+[Add screenshot of your Project Board with the updated status of issues for Milestone 3. Note that these should include the updated issues you worked on for this sprint and not be a duplicate of Milestone 2 Project board.] 
+<img width="816" height="561" alt="image" src="https://github.com/user-attachments/assets/8b762148-ddad-4831-8d25-37f5cf5c6130" />
+<img src="YOUR_WIREFRAME_IMAGE_URL" width=600>
 
 ## Completed user stories
 
 - List the completed user stories from this unit
 1. Updated Login/Registration System and homepage
+  - As a climber, I want a welcome screen that explains the app, so that I can get started.
+  - As a climber, I want to allow or skip location, camera, motion, and notifications, so that I can continue to the feed.
+  - As a climber, I want to create an account with a username and password, so that I can keep my logs and favorites on this phone.
+  - As a climber, I want to sign in to an account I already have, so that I can get back to my climbs.
 2. Feed
+  - As a climber, I want to scroll a feed of Kilter board setups, so that I can open one and see how the board is set.
+  - As a climber, I want to filter the feed by board, angle, and grade, so that I can see climbs that fit the session.
+  - As a climber, I want to find outdoor climbing problems, so that I can discover climbs outside the gym.
+  - As a climber, I want to favorite Kilter board setups, so that I can find them again later.
 3. Session with sensors
+  - As a climber, I want the phone to track the distance I climbed during a session, so that I can see how far I got.
+  - As a climber, I want to log attempts, tops, time, and notes for a session, so that I can save that day to the diary.
+  - As a climber, I want to see a my charted climbing path taken during an attempt.
 4. Diary
-5. User Page
-6. Permissions
+  - As a climber, I want a logbook of my climbing days, so that I can review what I attempted.
+5. Profile
+  - As a climber, I want to change my account settings and permissions, so that I can control what the app is allowed to use.
+<!--6. Permissions-->
 - List any pending user stories / any user stories you decided to cut
 from the original requirements
 
@@ -296,8 +312,10 @@ Feed:
 Saved:
 
 Session:
+ - As a climber, I want to edit or delete an attempt, so that I can correct a session before I save it. (PENDING)
 
 Diary:
+  - As a climber, I want to add photos to a dairy entry, so that I can remember the climb. (PENDING)
 
 Profile:
 
