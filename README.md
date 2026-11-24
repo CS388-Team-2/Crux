@@ -304,20 +304,20 @@ The Kilter feed, logbook, photos, sensor distance, and favorites stories are sti
 <!--6. Permissions-->
 - List any pending user stories / any user stories you decided to cut
 from the original requirements
-
+<!--
 Login System:
 
 Feed:
 
 Saved:
-
+-->
 Session:
  - As a climber, I want to edit or delete an attempt, so that I can correct a session before I save it. (PENDING)
 
 Diary:
   - As a climber, I want to add photos to a dairy entry, so that I can remember the climb. (PENDING)
 
-Profile:
+<!--Profile:-->
 
 ## App Demo Video
 
