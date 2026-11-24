@@ -32,6 +32,7 @@ data class FeedFilter(
         const val MOST_CLIMBED = "most"
         const val LEAST_CLIMBED = "least"
         const val TOP_CLIMBED = "top"
+        const val NEWEST = "newest"
         private const val TOP_LIMIT = 50
     }
 }

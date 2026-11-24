@@ -8,6 +8,7 @@ enum class KilterSort {
     MOST,
     LEAST,
     TOP,
+    NEWEST,
 }
 
 object KilterCatalog {
@@ -15,7 +16,7 @@ object KilterCatalog {
     private const val FILE_NAME = "kilter.db"
     private const val PREFS = "kilter_catalog"
     private const val KEY_VERSION = "version"
-    private const val VERSION = 2
+    private const val VERSION = 3
     private const val CLIMB_COLUMNS =
         "uuid, name, grade, angle, setter, layout_name, logged_count, quality, " +
             "IFNULL((SELECT frames FROM climb_frames WHERE uuid = climbs.uuid), '')"
@@ -51,10 +52,10 @@ object KilterCatalog {
         if (remaining <= 0) return Page(emptyList(), hasMore = false)
         val limit = minOf(PAGE_SIZE, remaining)
         val (where, args) = selection(minGrade, maxGrade, angle, hideSaved, savedIds)
-        val order = if (sort == KilterSort.LEAST) {
-            "logged_count ASC, name COLLATE NOCASE ASC"
-        } else {
-            "logged_count DESC, name COLLATE NOCASE ASC"
+        val order = when (sort) {
+            KilterSort.LEAST -> "logged_count ASC, name COLLATE NOCASE ASC"
+            KilterSort.NEWEST -> "created_at DESC, name COLLATE NOCASE ASC"
+            else -> "logged_count DESC, name COLLATE NOCASE ASC"
         }
         val queryArgs = args + limit.toString() + offset.toString()
         val climbs = query(

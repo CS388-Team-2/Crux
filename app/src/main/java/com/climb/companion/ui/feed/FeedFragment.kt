@@ -405,6 +405,7 @@ private fun KilterClimb.toFeedClimb(): FeedClimb = FeedClimb(
 internal fun FeedFilter.kilterSort(): KilterSort = when (popularity) {
     FeedFilter.LEAST_CLIMBED -> KilterSort.LEAST
     FeedFilter.TOP_CLIMBED -> KilterSort.TOP
+    FeedFilter.NEWEST -> KilterSort.NEWEST
     else -> KilterSort.MOST
 }
 

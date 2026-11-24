@@ -136,7 +136,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
-                android:text="POPULARITY"
+                android:text="ORDER"
                 android:textColor="@color/crux_muted"
                 android:textSize="12sp" />
 
@@ -144,7 +144,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:text="Based on how many people have climbed it."
+                android:text="Most and least climbed follow how many people have logged it. Most recently added follows when the climb was published."
                 android:textColor="@color/crux_muted"
                 android:textSize="13sp" />
 
@@ -171,6 +171,12 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Top 50 only" />
+
+                <RadioButton
+                    android:id="@+id/popularity_newest"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Most recently added" />
             </RadioGroup>
 
             <com.google.android.material.switchmaterial.SwitchMaterial

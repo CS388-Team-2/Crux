@@ -107,6 +107,7 @@ class FilterActivity : AppCompatActivity() {
             when (filter.popularity) {
                 FeedFilter.LEAST_CLIMBED -> R.id.popularity_least
                 FeedFilter.TOP_CLIMBED -> R.id.popularity_top
+                FeedFilter.NEWEST -> R.id.popularity_newest
                 else -> R.id.popularity_most
             }
         )
@@ -130,6 +131,7 @@ class FilterActivity : AppCompatActivity() {
             popularity = when (popularityGroup.checkedRadioButtonId) {
                 R.id.popularity_least -> FeedFilter.LEAST_CLIMBED
                 R.id.popularity_top -> FeedFilter.TOP_CLIMBED
+                R.id.popularity_newest -> FeedFilter.NEWEST
                 else -> FeedFilter.MOST_CLIMBED
             },
             hideSaved = hideSavedSwitch.isChecked,
