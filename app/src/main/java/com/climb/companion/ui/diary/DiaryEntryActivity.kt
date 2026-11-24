@@ -3,8 +3,10 @@ package com.climb.companion.ui.diary
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.climb.companion.R
@@ -13,11 +15,11 @@ import com.climb.companion.data.AppDatabase
 import com.climb.companion.data.UserSession
 import com.climb.companion.data.entity.ClimbLogs
 import com.climb.companion.data.entity.DiaryDayLog
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.launch
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.Calendar
-import java.util.Date
 import java.util.Locale
 
 class DiaryEntryActivity : AppCompatActivity() {
@@ -29,6 +31,8 @@ class DiaryEntryActivity : AppCompatActivity() {
     private lateinit var dAttempts: TextView
     private lateinit var dTops: TextView
     private lateinit var dDistance: TextView
+    private var originalTitle = ""
+    private var originalNotes = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,18 +53,23 @@ class DiaryEntryActivity : AppCompatActivity() {
         dTops = findViewById(R.id.TopsValue)
         dDistance = findViewById(R.id.DistanceValue)
 
-        val saveButton = findViewById<Button>(R.id.BackButton)
-        saveButton.text = "Save"
-
         val dao = AppDatabase.getInstance(this).appDao()
         val logId = intent.getLongExtra("logId", -1L)
 
+        findViewById<ImageButton>(R.id.back_button).setOnClickListener { confirmLeave() }
+        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() = confirmLeave()
+        })
+
+        val saveButton = findViewById<Button>(R.id.save_button)
         if (logId != -1L) {
             lifecycleScope.launch {
                 val log = dao.getSingleLog(logId) ?: return@launch
-                dTitle.setText(log.title.orEmpty(), TextView.BufferType.EDITABLE)
+                originalTitle = log.title.orEmpty()
+                originalNotes = log.notes.orEmpty()
+                dTitle.setText(originalTitle, TextView.BufferType.EDITABLE)
                 dDate.text = getDate(log.date)
-                dBody.setText(log.notes.orEmpty(), TextView.BufferType.EDITABLE)
+                dBody.setText(originalNotes, TextView.BufferType.EDITABLE)
                 bindDayStats(dao.getDailyLogData(logId) ?: dao.getDailyStatsForDate(userId, log.date))
             }
             saveButton.setOnClickListener { saveExisting(dao, logId) }
@@ -72,6 +81,22 @@ class DiaryEntryActivity : AppCompatActivity() {
             }
             saveButton.setOnClickListener { saveNew(dao, userId, todayString) }
         }
+    }
+
+    private fun confirmLeave() {
+        if (!hasUnsavedChanges()) {
+            finish()
+            return
+        }
+        MaterialAlertDialogBuilder(this)
+            .setMessage("There are unsaved changes. Are you sure you want to go back?")
+            .setPositiveButton("Go back") { _, _ -> finish() }
+            .setNegativeButton("Stay", null)
+            .show()
+    }
+
+    private fun hasUnsavedChanges(): Boolean {
+        return dTitle.text.toString() != originalTitle || dBody.text.toString() != originalNotes
     }
 
     private fun bindDayStats(dayData: DiaryDayLog?) {

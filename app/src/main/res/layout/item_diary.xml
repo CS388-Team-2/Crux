@@ -32,21 +32,9 @@
         app:layout_constraintStart_toEndOf="@id/diaryEntryDate"
         app:layout_constraintTop_toTopOf="@id/diaryEntryDate"
         app:layout_constraintBottom_toBottomOf="@id/diaryEntryDate"
-        app:layout_constraintEnd_toEndOf="@id/diaryEntryDistance"
+        app:layout_constraintEnd_toEndOf="parent"
         android:maxLines="1"
         android:ellipsize="end"
-        />
-
-    <TextView
-        android:id="@+id/diaryArrayIcon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="&gt;"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/diaryEntryDate"
-        app:layout_constraintBottom_toBottomOf="@id/diaryEntryDate"
         />
 
     <TextView
