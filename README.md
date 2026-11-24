@@ -302,8 +302,7 @@ The Kilter feed, logbook, photos, sensor distance, and favorites stories are sti
 5. Profile
   - As a climber, I want to change my account settings and permissions, so that I can control what the app is allowed to use.
 <!--6. Permissions-->
-## pending user stories / any user stories you decided to cut
-from the original requirements
+## pending user stories / any user stories you decided to cut from the original requirements
 <!--
 Login System:
 
