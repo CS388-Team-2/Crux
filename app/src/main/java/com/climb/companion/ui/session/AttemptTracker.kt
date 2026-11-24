@@ -17,7 +17,7 @@ class AttemptTracker(
     // Numbers to tune on a real phone
     private val startHeight = 0.5   // meters above the ground that count as climbing
     private val groundHeight = 0.3  // lower than this counts as back on the ground
-    private val minHeight = 1.5     // attempts that never get this high are ignored
+    private val minHeight = 1.0     // attempts that never get this high are ignored
     private val fadeSeconds = 1.5   // sideways speed fades with this time constant so x does not run away
     private val noiseLimit = 0.1    // remove x axis sensor noise
 
