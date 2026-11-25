@@ -345,4 +345,4 @@ Diary:
 
 ## App Demo Video
 
-- Embed the YouTube/Vimeo link of your Completed Demo Day prep video
+[(https://www.youtube.com/watch?v=abc123XYZ)](https://youtu.be/KfJ0fNJaO4s)
