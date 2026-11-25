@@ -345,4 +345,4 @@ Diary:
 
 ## App Demo Video
 
-[(https://www.youtube.com/watch?v=abc123XYZ)](https://youtu.be/KfJ0fNJaO4s)
+[![Crux demo](https://img.youtube.com/vi/abc123XYZ/hqdefault.jpg)](https://youtu.be/KfJ0fNJaO4s)
