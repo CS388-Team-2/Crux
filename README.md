@@ -288,19 +288,48 @@ The Kilter feed, logbook, photos, sensor distance, and favorites stories are sti
   - As a climber, I want to allow or skip location, camera, motion, and notifications, so that I can continue to the feed.
   - As a climber, I want to create an account with a username and password, so that I can keep my logs and favorites on this phone.
   - As a climber, I want to sign in to an account I already have, so that I can get back to my climbs.
+
+
+https://github.com/user-attachments/assets/5b4771d0-6595-4ade-9024-0cc465f2b315
+
+
 2. Feed
   - As a climber, I want to scroll a feed of Kilter board setups, so that I can open one and see how the board is set.
   - As a climber, I want to filter the feed by board, angle, and grade, so that I can see climbs that fit the session.
   - As a climber, I want to find outdoor climbing problems, so that I can discover climbs outside the gym.
   - As a climber, I want to favorite Kilter board setups, so that I can find them again later.
+
+
+https://github.com/user-attachments/assets/443f7c78-d4c8-4619-9830-19018f75e5d8
+
+
+https://github.com/user-attachments/assets/85c694dd-5550-4134-a896-73d019efc6ca
+
+
+
 3. Session with sensors
   - As a climber, I want the phone to track the distance I climbed during a session, so that I can see how far I got.
   - As a climber, I want to log attempts, tops, time, and notes for a session, so that I can save that day to the diary.
   - As a climber, I want to see a my charted climbing path taken during an attempt.
+
+
+https://github.com/user-attachments/assets/df31a0f3-e16b-4b50-b623-17a94a07b50b
+
+
 4. Diary
   - As a climber, I want a logbook of my climbing days, so that I can review what I attempted.
+
+
+https://github.com/user-attachments/assets/7bcb8c3b-a6b0-4ee9-87d0-29c63d23b963
+
+
 5. Profile
   - As a climber, I want to change my account settings and permissions, so that I can control what the app is allowed to use.
+
+
+https://github.com/user-attachments/assets/47d994b8-b157-4555-a2c6-0570797d13eb
+
+
 <!--6. Permissions-->
 ## pending user stories / any user stories you decided to cut from the original requirements
 <!--
@@ -310,8 +339,6 @@ Feed:
 
 Saved:
 -->
-Session:
- - As a climber, I want to edit or delete an attempt, so that I can correct a session before I save it. (PENDING)
 
 Diary:
   - As a climber, I want to add photos to a dairy entry, so that I can remember the climb. (PENDING)
