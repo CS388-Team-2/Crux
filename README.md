@@ -276,9 +276,7 @@ The Kilter feed, logbook, photos, sensor distance, and favorites stories are sti
 
 ## GitHub Project board
 
-[Add screenshot of your Project Board with the updated status of issues for Milestone 3. Note that these should include the updated issues you worked on for this sprint and not be a duplicate of Milestone 2 Project board.] 
 <img width="816" height="561" alt="image" src="https://github.com/user-attachments/assets/8b762148-ddad-4831-8d25-37f5cf5c6130" />
-<img src="YOUR_WIREFRAME_IMAGE_URL" width=600>
 
 ## Completed user stories
 
